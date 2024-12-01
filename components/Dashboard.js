@@ -114,7 +114,7 @@ export default function DashboardScreen() {
         </View>
 
         {/* Create New Event Button */}
-        <TouchableOpacity style={styles.createEventButton}>
+        <TouchableOpacity style={styles.createEventButton}  onPress={() => navigation.navigate('Plan')}>
           <Ionicons name="add-circle-outline" size={24} color="white" />
           <Text style={styles.createEventButtonText}>Create New Event</Text>
         </TouchableOpacity>
