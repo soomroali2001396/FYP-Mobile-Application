@@ -37,7 +37,7 @@ import Menu4 from './components/screens1/Menu4';
 import Transportation from './components/screens2/Transportation'; 
 import Car from './components/screens2/Car'; 
 import Decoration from './components/screens2/Decoration'; 
-import Music from './components/screens2/Music'; 
+import Music from './components/screens2/music'; 
 import Payment from './components/screens2/Payment';
 import templatesrc from './components/screens2/templatesrc'; 
 
