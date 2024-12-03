@@ -20,6 +20,7 @@ import Plan from './components/Plan';
 import Offers from './components/Offers';
 import Helperform from './components/Helperform';
 import Existinghelper from './components/Existinghelper';
+import Venuservice from './components/Venuservice';
 // Other imports remain unchanged
 import Item1 from './components/screens/Item1'; 
 import Item2 from './components/screens/Item2';
@@ -31,12 +32,13 @@ import Menu1 from './components/screens1/Menu1';
 import Menu2 from './components/screens1/Menu2'; 
 import Menu3 from './components/screens1/Menu3'; 
 import Menu4 from './components/screens1/Menu4'; 
-import transport from './components/screens2/transport'; 
+import Transportation from './components/screens2/Transportation'; 
 import Car from './components/screens2/Car'; 
-import decor from './components/screens2/decor'; 
-import music from './components/screens2/music'; 
+import Decoration from './components/screens2/Decoration'; 
+import Music from './components/screens2/Music'; 
 import Payment from './components/screens2/Payment';
 import templatesrc from './components/screens2/templatesrc'; 
+
 import edittemplate from './components/screens2/edittemplate'; 
 // import ApiService from './components/screens2/ApiService';
 
@@ -143,14 +145,15 @@ export default function App() {
           <Stack.Screen name="Menu2" component={Menu2} />
           <Stack.Screen name="Menu4" component={Menu4} />
           <Stack.Screen name="Menu3" component={Menu3} />
-          <Stack.Screen name="transport" component={transport} />
+          <Stack.Screen name="Transportation" component={Transportation} />
           <Stack.Screen name="Car" component={Car} />
-          <Stack.Screen name="decor" component={decor} />
-          <Stack.Screen name="music" component={music} />
+          <Stack.Screen name="Decoration" component={Decoration} />
+          <Stack.Screen name="Music" component={Music} />
           <Stack.Screen name="Payment" component={Payment} />
           <Stack.Screen name="templatesrc" component={templatesrc} />
           <Stack.Screen name="Helperform" component={Helperform} />
           <Stack.Screen name="Existinghelper" component={Existinghelper} />
+          <Stack.Screen name="Venuservice" component={Venuservice} />
           {/* <Stack.Screen name="edittemplate" component={edittemplate} /> */}
           {/* <Stack.Screen name="ApiService" component={ApiService} /> */}
         </Stack.Navigator>

@@ -241,9 +241,12 @@ export default function AddEventScreen({ navigation }) {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
   const availableServices = [
+    { label: 'Venuservice', value: 'Venuservice' },
     { label: 'Catering', value: 'Catering' },
-    { label: 'Transport', value: 'Transport' },
-    { label: 'Venue', value: 'Venue' },
+    { label: 'Transportation', value: 'Transportation' },
+    { label: 'Decoration', value: 'Decoration' },
+    { label: 'Music', value: 'Music' }, 
+    { label: 'E-card', value: 'templatesrc' }, 
   ];
 
   const addService = () => {
