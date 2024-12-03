@@ -18,7 +18,7 @@ const PaymentScreen = ({ route, navigation }) => {
   // Handle ticket purchase and navigate to Services screen
   const handleBuyTicket = () => {
     // Navigate to Services.js and pass the necessary information
-    navigation.navigate('Services', {
+    navigation.navigate('Plan', {
       from: fromStation,
       to: toStation,
       time: time,

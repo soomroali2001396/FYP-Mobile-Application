@@ -32,6 +32,7 @@ const TrainScheduleScreen = ({ navigation }) => {
           text: "Proceed",
           onPress: () => {
             // Navigate to the Payment screen upon confirmation
+            // navigation.navigate('Payment', { price: schedule.price, time: selectedTime.toLocaleTimeString() });
             navigation.navigate('Payment', { price: schedule.price, time: selectedTime.toLocaleTimeString() });
           }
         }
