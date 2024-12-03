@@ -21,6 +21,8 @@ import Offers from './components/Offers';
 import Helperform from './components/Helperform';
 import Existinghelper from './components/Existinghelper';
 import Venuservice from './components/Venuservice';
+import Catering from './components/Catering';
+import Eventprogress from './components/Eventprogress';
 // Other imports remain unchanged
 import Item1 from './components/screens/Item1'; 
 import Item2 from './components/screens/Item2';
@@ -154,6 +156,8 @@ export default function App() {
           <Stack.Screen name="Helperform" component={Helperform} />
           <Stack.Screen name="Existinghelper" component={Existinghelper} />
           <Stack.Screen name="Venuservice" component={Venuservice} />
+          <Stack.Screen name="Catering" component={Catering} />
+          <Stack.Screen name="Eventprogress" component={Eventprogress} />
           {/* <Stack.Screen name="edittemplate" component={edittemplate} /> */}
           {/* <Stack.Screen name="ApiService" component={ApiService} /> */}
         </Stack.Navigator>

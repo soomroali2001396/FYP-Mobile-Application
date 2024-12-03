@@ -591,13 +591,13 @@ const Services = () => {
             <TouchableOpacity
               onPress={() => {
                 if (item.id === '1') {
-                  navigateToScreen('transport');
+                  navigateToScreen('Transportation');
                 }
                 if (item.id === '2') {
-                  navigateToScreen('decor');
+                  navigateToScreen('Decoration');
                 }
                 if (item.id === '3') {
-                  navigateToScreen('music');
+                  navigateToScreen('Music');
                 }
                 if (item.id === '4') {
                   setSelectedItem(item);

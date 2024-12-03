@@ -1,188 +1,429 @@
+
+
 // import React, { useState } from 'react';
-// import { View, Text, TextInput, StyleSheet, TouchableOpacity, Modal, Button, Alert } from 'react-native';
-// import { Calendar } from 'react-native-calendars'; // Import Calendar from react-native-calendars
-// import { Picker } from '@react-native-picker/picker'; // Correct import for Picker
+// import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+// import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for close button
 
-// const EventSetupScreen = ({ navigation }) => {
-//   const [startDate, setStartDate] = useState('');
-//   const [endDate, setEndDate] = useState('');
+// export default function AddEventScreen({ navigation }) {
+//   const [eventName, setEventName] = useState('');
+//   const [eventDate, setEventDate] = useState({ from: '', to: '' });
 //   const [budget, setBudget] = useState('');
-//   const [eventType, setEventType] = useState('');
-  
-//   const [isDateModalVisible, setIsDateModalVisible] = useState(false);
-//   const [isBudgetModalVisible, setIsBudgetModalVisible] = useState(false);
-//   const [isEventTypeModalVisible, setIsEventTypeModalVisible] = useState(false);
+//   const [selectedService, setSelectedService] = useState('');
+//   const [services, setServices] = useState([]);
+//   const [showServiceModal, setShowServiceModal] = useState(false);
+//   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+//   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
-//   // Handle "Next" button action
-//   const handleNext = () => {
-//     if (!startDate || !endDate || !budget || !eventType) {
-//       Alert.alert('Validation Error', 'All fields are mandatory!');
-//       return;
-//     }
-//     navigation.navigate('NextScreen', { startDate, endDate, budget, eventType });
-//   };
+//   const availableServices = [
+//     { label: 'Venuservice', value: 'Venuservice', icon: 'rocket' },
+//     { label: 'Catering', value: 'Catering', icon: 'cutlery' },
+//     { label: 'Transportation', value: 'Transportation', icon: 'car' },
+//     { label: 'Decoration', value: 'Decoration', icon: 'wrench' },
+//   ];
 
-//   // Handle selecting a start date
-//   const handleDayPress = (day) => {
-//     if (!startDate) {
-//       // Set start date if not already selected
-//       setStartDate(day.dateString);
-//     } else if (startDate && !endDate) {
-//       // Set end date if start date is already selected
-//       setEndDate(day.dateString);
+//   const addService = (service) => {
+//     if (service) {
+//       if (!services.includes(service)) {
+//         setServices([...services, service]);
+//         setSelectedService(service); // Set selected service name
+//         navigation.navigate(service); // Navigate to the selected service's specific screen
+//       } else {
+//         alert(`${service} is already added.`);
+//       }
+//       setShowServiceModal(false); // Close modal after selection
 //     } else {
-//       // Reset dates if both are selected (optional)
-//       setStartDate(day.dateString);
-//       setEndDate('');
+//       alert('Please select a service');
 //     }
 //   };
 
-//   // Format the calendar marked dates for range selection
-//   const markedDates = startDate && endDate ? {
-//     [startDate]: { selected: true, selectedColor: 'blue' },
-//     [endDate]: { selected: true, selectedColor: 'blue' },
-//     [`${startDate}_${endDate}`]: {
-//       selected: true,
-//       selectedColor: 'blue',
-//       selectedTextColor: 'white',
-//     },
-//   } : startDate ? {
-//     [startDate]: { selected: true, selectedColor: 'blue' },
-//   } : {};
+//   const finalizeEvent = () => {
+//     if (!eventName || !budget || !eventDate.from || !eventDate.to) {
+//       alert('Please fill in all fields before finalizing the event');
+//     } else {
+//       console.log('Event Finalized with details:', { eventName, eventDate, budget, services });
+//     }
+//   };
+
+//   const formatDate = (date) => {
+//     return date ? date.toLocaleDateString() : '';
+//   };
+
+//   const handleDateChange = (event, selectedDate, isStart) => {
+//     const currentDate = selectedDate || event.date;
+//     const formattedDate = formatDate(currentDate);
+
+//     if (isStart) {
+//       setEventDate((prevDate) => ({
+//         ...prevDate,
+//         from: formattedDate,
+//       }));
+//       setShowStartDatePicker(false);
+//     } else {
+//       setEventDate((prevDate) => ({
+//         ...prevDate,
+//         to: formattedDate,
+//       }));
+//       setShowEndDatePicker(false);
+//     }
+//   };
 
 //   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Event Setup</Text>
+//     <ScrollView style={styles.container}>
+//       <Text style={styles.header}>Create New Event</Text>
 
-//       {/* Grid of buttons */}
-//       <View style={styles.grid}>
-//         {/* Set Date Button */}
-//         <TouchableOpacity style={styles.button} onPress={() => setIsDateModalVisible(true)}>
-//           <Text style={styles.buttonText}>
-//             {`Set Date: From ${startDate} To ${endDate}`}
-//           </Text>
-//         </TouchableOpacity>
-
-//         {/* Set Budget Button */}
-//         <TouchableOpacity style={styles.button} onPress={() => setIsBudgetModalVisible(true)}>
-//           <Text style={styles.buttonText}>Set Budget</Text>
-//         </TouchableOpacity>
-
-//         {/* Set Event Type Button */}
-//         <TouchableOpacity style={styles.button} onPress={() => setIsEventTypeModalVisible(true)}>
-//           <Text style={styles.buttonText}>{eventType || 'Set Event Type'}</Text>
-//         </TouchableOpacity>
+//       {/* Event Name Input */}
+//       <View style={styles.inputWrapper}>
+//         <Icon name="pencil" size={20} color="#4CAF50" style={styles.icon} />
+//         <TextInput
+//           placeholder="Enter Event Name"
+//           value={eventName}
+//           onChangeText={setEventName}
+//           style={styles.input}
+//         />
 //       </View>
 
-//       {/* Modal for setting Date (Start and End Date) */}
-//       <Modal
-//         animationType="slide"
-//         transparent={true}
-//         visible={isDateModalVisible}
-//         onRequestClose={() => setIsDateModalVisible(false)}
-//       >
-//         <View style={styles.modalBackground}>
-//           <View style={styles.modalContainer}>
-//             <Text style={styles.modalTitle}>Set Date Range</Text>
+//       {/* Budget Input */}
+//       <View style={styles.inputWrapper}>
+//         <Icon name="dollar" size={20} color="#4CAF50" style={styles.icon} />
+//         <TextInput
+//           placeholder="Enter Event Budget"
+//           keyboardType="numeric"
+//           value={budget}
+//           onChangeText={setBudget}
+//           style={styles.input}
+//         />
+//       </View>
 
-//             {/* Calendar for selecting dates */}
-//             <Calendar
-//               onDayPress={handleDayPress}
-//               markedDates={markedDates}
-//               markingType={'period'} // To show range selection
-//               monthFormat={'yyyy MM'} // Display year and month
-//             />
+//       {/* Event Dates */}
+//       <View style={styles.datePickerWrapper}>
+//         <Text style={styles.label}>Event Dates</Text>
+//         <Text style={styles.dateText}>
+//           From: 
+//           <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
+//             <Text style={styles.dateSelectText}>{eventDate.from || 'Select Start Date'}</Text>
+//           </TouchableOpacity>
+//         </Text>
+//         <Text style={styles.dateText}>
+//           To: 
+//           <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
+//             <Text style={styles.dateSelectText}>{eventDate.to || 'Select End Date'}</Text>
+//           </TouchableOpacity>
+//         </Text>
+//       </View>
 
-//             <View style={styles.modalButtonContainer}>
-//               <Button title="Close" onPress={() => setIsDateModalVisible(false)} />
-//             </View>
+//       {/* Start Date Picker */}
+//       {showStartDatePicker && (
+//         <DateTimePicker
+//           value={new Date()}
+//           mode="date"
+//           display="default"
+//           onChange={(event, selectedDate) => handleDateChange(event, selectedDate, true)}
+//         />
+//       )}
+
+//       {/* End Date Picker */}
+//       {showEndDatePicker && (
+//         <DateTimePicker
+//           value={new Date()}
+//           mode="date"
+//           display="default"
+//           onChange={(event, selectedDate) => handleDateChange(event, selectedDate, false)}
+//         />
+//       )}
+
+//       {/* Service Button */}
+//       <TouchableOpacity onPress={() => setShowServiceModal(true)} style={styles.pickerButton}>
+//         <Text style={styles.buttonText}>{selectedService ? selectedService : 'Select a Service'}</Text>
+//       </TouchableOpacity>
+
+//       {/* Modal for Service Selection */}
+//       <Modal visible={showServiceModal} transparent={true} animationType="slide">
+//         <View style={styles.modalOverlay}>
+//           <View style={styles.modalContent}>
+//             <TouchableOpacity onPress={() => setShowServiceModal(false)} style={styles.closeButton}>
+//               <Ionicons name="close-circle" size={32} color="#4CAF50" />
+//             </TouchableOpacity>
+//             <Text style={styles.modalHeader}>Select a Service</Text>
+//             {availableServices.map((service, index) => (
+//               <TouchableOpacity
+//                 key={index}
+//                 onPress={() => addService(service.label)}
+//                 style={styles.serviceOption}
+//               >
+//                 <View style={styles.serviceOptionContent}>
+//                   <Icon
+//                     name={service.icon}
+//                     size={22}
+//                     color="#4CAF50"
+//                     style={styles.serviceIcon}
+//                   />
+//                   <Text style={styles.serviceOptionText}>{service.label}</Text>
+//                 </View>
+//               </TouchableOpacity>
+//             ))}
 //           </View>
 //         </View>
 //       </Modal>
 
-//       {/* Modal for setting Budget */}
-//       <Modal
-//         animationType="slide"
-//         transparent={true}
-//         visible={isBudgetModalVisible}
-//         onRequestClose={() => setIsBudgetModalVisible(false)}
-//       >
-//         <View style={styles.modalBackground}>
-//           <View style={styles.modalContainer}>
-//             <Text style={styles.modalTitle}>Set Budget</Text>
-//             {/* TextInput for entering budget */}
-//             <TextInput
-//               style={styles.input}
-//               placeholder="Enter Budget"
-//               keyboardType="numeric"
-//               value={budget}
-//               onChangeText={setBudget}
-//             />
-//             <View style={styles.modalButtonContainer}>
-//               <Button title="Set Budget" onPress={() => setIsBudgetModalVisible(false)} />
-//               <Button title="Close" onPress={() => setIsBudgetModalVisible(false)} />
-//             </View>
-//           </View>
-//         </View>
-//       </Modal>
+//       {/* Finalize Event Button */}
+//       <TouchableOpacity onPress={finalizeEvent} style={styles.finalizeButton}>
+//         <Text style={styles.buttonText}>Finalize Event</Text>
+//       </TouchableOpacity>
 
-//       {/* Modal for setting Event Type */}
-//       <Modal
-//         animationType="slide"
-//         transparent={true}
-//         visible={isEventTypeModalVisible}
-//         onRequestClose={() => setIsEventTypeModalVisible(false)}
-//       >
-//         <View style={styles.modalBackground}>
-//           <View style={styles.modalContainer}>
-//             <Text style={styles.modalTitle}>Set Event Type</Text>
-//             {/* Picker for selecting event type */}
-//             <Picker
-//               selectedValue={eventType}
-//               onValueChange={(itemValue) => setEventType(itemValue)} // Directly update the state
-//             >
-//               <Picker.Item label="Wedding Event" value="Wedding" />
-//               <Picker.Item label="Business Event" value="Business" />
-//             </Picker>
-//             <View style={styles.modalButtonContainer}>
-//               <Button title="Set Event Type" onPress={() => setIsEventTypeModalVisible(false)} />
-//               <Button title="Close" onPress={() => setIsEventTypeModalVisible(false)} />
-//             </View>
-//           </View>
-//         </View>
-//       </Modal>
-
-//       {/* Next Button */}
-//       <Button title="Next" onPress={handleNext} />
-//     </View>
+//       {/* Services Added */}
+//       <View style={styles.servicesList}>
+//         <Text style={styles.servicesHeader}>Added Services:</Text>
+//         {services.map((service, index) => (
+//           <Text key={index} style={styles.serviceItem}>{service}</Text>
+//         ))}
+//       </View>
+//     </ScrollView>
 //   );
-// };
+// // }
+// import React, { useState } from 'react';
+// import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+// import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for close button
+// import { useNavigation } from '@react-navigation/native';
+
+// export default function AddEventScreen({ navigation }) {
+//   const [eventName, setEventName] = useState('');
+//   const [eventDate, setEventDate] = useState({ from: '', to: '' });
+//   const [budget, setBudget] = useState('');
+//   const [selectedService, setSelectedService] = useState('');
+//   const [services, setServices] = useState([]);
+//   const [showServiceModal, setShowServiceModal] = useState(false);
+//   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+//   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+//   const navigation = useNavigation();
+
+//   const availableServices = [
+//     { label: 'Venuservice', value: 'Venuservice', icon: 'rocket' },
+//     { label: 'Catering', value: 'Catering', icon: 'cutlery' },
+//     { label: 'Transportation', value: 'Transportation', icon: 'car' },
+//     { label: 'Decoration', value: 'Decoration', icon: 'wrench' },
+//   ];
+
+//   const addService = (service) => {
+//     if (service) {
+//       if (!services.includes(service)) {
+//         setServices([...services, service]);
+//         setSelectedService(service); // Set selected service name
+//         navigation.navigate(service); // Navigate to the selected service's specific screen
+//       } else {
+//         alert(`${service} is already added.`);
+//       }
+//       setShowServiceModal(false); // Close modal after selection
+//     } else {
+//       alert('Please select a service');
+//     }
+//   };
+
+//   const finalizeEvent = () => {
+//     if (!eventName || !budget || !eventDate.from || !eventDate.to) {
+//       alert('Please fill in all fields before finalizing the event');
+//     } else {
+//       // Navigate to EventProgress screen with the event data
+//       navigation.navigate('Eventprogress', {
+//         eventData: { eventName, eventDate, budget, services },
+//       });
+//     }
+//   };
+
+//   const formatDate = (date) => {
+//     return date ? date.toLocaleDateString() : '';
+//   };
+
+//   const handleDateChange = (event, selectedDate, isStart) => {
+//     const currentDate = selectedDate || event.date;
+//     const formattedDate = formatDate(currentDate);
+
+//     if (isStart) {
+//       setEventDate((prevDate) => ({
+//         ...prevDate,
+//         from: formattedDate,
+//       }));
+//       setShowStartDatePicker(false);
+//     } else {
+//       setEventDate((prevDate) => ({
+//         ...prevDate,
+//         to: formattedDate,
+//       }));
+//       setShowEndDatePicker(false);
+//     }
+//   };
+
+//   return (
+//     <ScrollView style={styles.container}>
+//       <Text style={styles.header}>Create New Event</Text>
+
+//       {/* Event Name Input */}
+//       <View style={styles.inputWrapper}>
+//         <Icon name="pencil" size={20} color="#4CAF50" style={styles.icon} />
+//         <TextInput
+//           placeholder="Enter Event Name"
+//           value={eventName}
+//           onChangeText={setEventName}
+//           style={styles.input}
+//         />
+//       </View>
+
+//       {/* Budget Input */}
+//       <View style={styles.inputWrapper}>
+//         <Icon name="dollar" size={20} color="#4CAF50" style={styles.icon} />
+//         <TextInput
+//           placeholder="Enter Event Budget"
+//           keyboardType="numeric"
+//           value={budget}
+//           onChangeText={setBudget}
+//           style={styles.input}
+//         />
+//       </View>
+
+//       {/* Event Dates */}
+//       <View style={styles.datePickerWrapper}>
+//         <Text style={styles.label}>Event Dates</Text>
+//         <Text style={styles.dateText}>
+//           From: 
+//           <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
+//             <Text style={styles.dateSelectText}>{eventDate.from || 'Select Start Date'}</Text>
+//           </TouchableOpacity>
+//         </Text>
+//         <Text style={styles.dateText}>
+//           To: 
+//           <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
+//             <Text style={styles.dateSelectText}>{eventDate.to || 'Select End Date'}</Text>
+//           </TouchableOpacity>
+//         </Text>
+//       </View>
+
+//       {/* Start Date Picker */}
+//       {showStartDatePicker && (
+//         <DateTimePicker
+//           value={new Date()}
+//           mode="date"
+//           display="default"
+//           onChange={(event, selectedDate) => handleDateChange(event, selectedDate, true)}
+//         />
+//       )}
+
+//       {/* End Date Picker */}
+//       {showEndDatePicker && (
+//         <DateTimePicker
+//           value={new Date()}
+//           mode="date"
+//           display="default"
+//           onChange={(event, selectedDate) => handleDateChange(event, selectedDate, false)}
+//         />
+//       )}
+
+//       {/* Service Button */}
+//       <TouchableOpacity onPress={() => setShowServiceModal(true)} style={styles.pickerButton}>
+//         <Text style={styles.buttonText}>{selectedService ? selectedService : 'Select a Service'}</Text>
+//       </TouchableOpacity>
+
+//       {/* Modal for Service Selection */}
+//       <Modal visible={showServiceModal} transparent={true} animationType="slide">
+//         <View style={styles.modalOverlay}>
+//           <View style={styles.modalContent}>
+//             <TouchableOpacity onPress={() => setShowServiceModal(false)} style={styles.closeButton}>
+//               <Ionicons name="close-circle" size={32} color="#4CAF50" />
+//             </TouchableOpacity>
+//             <Text style={styles.modalHeader}>Select a Service</Text>
+//             {availableServices.map((service, index) => (
+//               <TouchableOpacity
+//                 key={index}
+//                 onPress={() => addService(service.label)}
+//                 style={styles.serviceOption}
+//               >
+//                 <View style={styles.serviceOptionContent}>
+//                   <Icon
+//                     name={service.icon}
+//                     size={22}
+//                     color="#4CAF50"
+//                     style={styles.serviceIcon}
+//                   />
+//                   <Text style={styles.serviceOptionText}>{service.label}</Text>
+//                 </View>
+//               </TouchableOpacity>
+//             ))}
+//           </View>
+//         </View>
+//       </Modal>
+
+//       {/* Finalize Event Button */}
+//       <TouchableOpacity onPress={finalizeEvent} style={styles.finalizeButton}>
+//         <Text style={styles.buttonText}>Finalize Event</Text>
+//       </TouchableOpacity>
+
+//       {/* Services Added */}
+//       <View style={styles.servicesList}>
+//         <Text style={styles.servicesHeader}>Added Services:</Text>
+//         {services.map((service, index) => (
+//           <Text key={index} style={styles.serviceItem}>{service}</Text>
+//         ))}
+//       </View>
+//     </ScrollView>
+//   );
+// }
 
 // const styles = StyleSheet.create({
 //   container: {
-//     flex: 1,
 //     padding: 20,
-//     backgroundColor: '#f8f8f8',
+//     backgroundColor: '#f9f9f9',
 //   },
-//   title: {
-//     fontSize: 24,
+//   header: {
+//     fontSize: 28,
 //     fontWeight: 'bold',
 //     marginBottom: 20,
+//     color: '#333',
 //     textAlign: 'center',
 //   },
-//   grid: {
+//   inputWrapper: {
 //     flexDirection: 'row',
-//     flexWrap: 'wrap',
-//     justifyContent: 'space-evenly',
-//     marginBottom: 20,
+//     alignItems: 'center',
+//     marginVertical: 12,
+//     borderBottomWidth: 1,
+//     padding: 10,
+//     borderColor: '#ddd',
+//     backgroundColor: '#fff',
+//     borderRadius: 5,
 //   },
-//   button: {
-//     backgroundColor: '#6A4E36',
-//     padding: 20,
-//     margin: 10,
-//     borderRadius: 10,
-//     width: '40%',
-//     justifyContent: 'center',
+//   icon: {
+//     marginRight: 10,
+//   },
+//   input: {
+//     flex: 1,
+//     fontSize: 16,
+//     color: '#333',
+//   },
+//   label: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//     marginVertical: 10,
+//     color: '#555',
+//   },
+//   datePickerWrapper: {
+//     marginVertical: 20,
+//   },
+//   dateText: {
+//     fontSize: 16,
+//     color: '#888',
+//     marginBottom: 10,
+//   },
+//   dateSelectText: {
+//     color: '#4CAF50',
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//   },
+//   pickerButton: {
+//     backgroundColor: '#4CAF50',
+//     padding: 12,
+//     borderRadius: 5,
+//     marginVertical: 10,
 //     alignItems: 'center',
 //   },
 //   buttonText: {
@@ -190,45 +431,82 @@
 //     fontSize: 16,
 //     textAlign: 'center',
 //   },
-//   modalBackground: {
+//   finalizeButton: {
+//     backgroundColor: '#2196F3',
+//     padding: 12,
+//     borderRadius: 5,
+//     marginVertical: 10,
+//     alignItems: 'center',
+//   },
+//   servicesList: {
+//     marginVertical: 20,
+//   },
+//   servicesHeader: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     color: '#333',
+//     marginBottom: 10,
+//   },
+//   serviceItem: {
+//     fontSize: 16,
+//     color: '#555',
+//     marginBottom: 5,
+//   },
+//   modalOverlay: {
 //     flex: 1,
 //     justifyContent: 'center',
 //     alignItems: 'center',
-//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+//     backgroundColor: 'rgba(0,0,0,0.5)',
 //   },
-//   modalContainer: {
-//     backgroundColor: 'white',
-//     borderRadius: 10,
+//   modalContent: {
 //     width: '80%',
+//     backgroundColor: '#fff',
 //     padding: 20,
-//     alignItems: 'center',
+//     borderRadius: 8,
+//     elevation: 5,
 //   },
-//   modalTitle: {
+//   closeButton: {
+//     position: 'absolute',
+//     top: 10,
+//     right: 10,
+    
+//   },
+//   modalHeader: {
 //     fontSize: 20,
 //     fontWeight: 'bold',
-//     marginBottom: 10,
-//   },
-//   modalButtonContainer: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     width: '100%',
-//   },
-//   input: {
-//     width: '100%',
-//     height: 40,
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     borderRadius: 5,
-//     paddingHorizontal: 10,
+//     color: '#333',
 //     marginBottom: 20,
 //   },
+//   serviceOption: {
+//     paddingVertical: 15,
+//     paddingHorizontal: 20,
+//     borderBottomWidth: 1,
+//     borderColor: '#ddd',
+//     width: '100%',
+//     alignItems: 'center',
+//     flexDirection: 'row',
+//     backgroundColor: '#f7f7f7',
+//     borderRadius: 8,
+//     marginBottom: 10,
+//   },
+//   serviceOptionContent: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   serviceIcon: {
+//     marginRight: 15,
+//   },
+//   serviceOptionText: {
+//     fontSize: 16,
+//     color: '#333',
+//   },
 // });
-
-// export default EventSetupScreen;
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for close button
+import { useNavigation } from '@react-navigation/native';
 
 export default function AddEventScreen({ navigation }) {
   const [eventName, setEventName] = useState('');
@@ -241,20 +519,22 @@ export default function AddEventScreen({ navigation }) {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
   const availableServices = [
-    { label: 'Venuservice', value: 'Venuservice' },
-    { label: 'Catering', value: 'Catering' },
-    { label: 'Transportation', value: 'Transportation' },
-    { label: 'Decoration', value: 'Decoration' },
-    { label: 'Music', value: 'Music' }, 
-    { label: 'E-card', value: 'templatesrc' }, 
+    { label: 'Venuservice', value: 'Venuservice', icon: 'rocket' },
+    { label: 'Catering', value: 'Catering', icon: 'cutlery' },
+    { label: 'Transportation', value: 'Transportation', icon: 'car' },
+    { label: 'Decoration', value: 'Decoration', icon: 'wrench' },
   ];
 
-  const addService = () => {
-    if (selectedService) {
-      setServices([...services, selectedService]);
-      // Navigate to the selected service's specific screen
-      navigation.navigate(selectedService);
-      setShowServiceModal(false); // Close modal after selection
+  const addService = (service) => {
+    if (service) {
+      if (!services.includes(service)) {
+        setServices([...services, service]);
+        setSelectedService(service);
+        navigation.navigate(service);
+      } else {
+        alert(`${service} is already added.`);
+      }
+      setShowServiceModal(false);
     } else {
       alert('Please select a service');
     }
@@ -264,16 +544,16 @@ export default function AddEventScreen({ navigation }) {
     if (!eventName || !budget || !eventDate.from || !eventDate.to) {
       alert('Please fill in all fields before finalizing the event');
     } else {
-      console.log('Event Finalized with details:', { eventName, eventDate, budget, services });
+      navigation.navigate('Eventprogress', {
+        eventData: { eventName, eventDate, budget, services },
+      });
     }
   };
 
-  // Format date to locale date string
   const formatDate = (date) => {
-    return date ? date.toLocaleDateString() : '';
+    return date ? new Date(date).toLocaleDateString() : '';  // Format the Date object to string
   };
 
-  // Handle date change for start and end date pickers
   const handleDateChange = (event, selectedDate, isStart) => {
     const currentDate = selectedDate || event.date;
     const formattedDate = formatDate(currentDate);
@@ -297,7 +577,6 @@ export default function AddEventScreen({ navigation }) {
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Create New Event</Text>
 
-      {/* Event Name Input */}
       <View style={styles.inputWrapper}>
         <Icon name="pencil" size={20} color="#4CAF50" style={styles.icon} />
         <TextInput
@@ -308,7 +587,6 @@ export default function AddEventScreen({ navigation }) {
         />
       </View>
 
-      {/* Budget Input */}
       <View style={styles.inputWrapper}>
         <Icon name="dollar" size={20} color="#4CAF50" style={styles.icon} />
         <TextInput
@@ -320,7 +598,6 @@ export default function AddEventScreen({ navigation }) {
         />
       </View>
 
-      {/* Event Dates */}
       <View style={styles.datePickerWrapper}>
         <Text style={styles.label}>Event Dates</Text>
         <Text style={styles.dateText}>
@@ -337,7 +614,6 @@ export default function AddEventScreen({ navigation }) {
         </Text>
       </View>
 
-      {/* Start Date Picker */}
       {showStartDatePicker && (
         <DateTimePicker
           value={new Date()}
@@ -347,7 +623,6 @@ export default function AddEventScreen({ navigation }) {
         />
       )}
 
-      {/* End Date Picker */}
       {showEndDatePicker && (
         <DateTimePicker
           value={new Date()}
@@ -357,41 +632,42 @@ export default function AddEventScreen({ navigation }) {
         />
       )}
 
-      {/* Service Button */}
       <TouchableOpacity onPress={() => setShowServiceModal(true)} style={styles.pickerButton}>
         <Text style={styles.buttonText}>{selectedService ? selectedService : 'Select a Service'}</Text>
       </TouchableOpacity>
 
-      {/* Modal for Service Selection */}
       <Modal visible={showServiceModal} transparent={true} animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
+            <TouchableOpacity onPress={() => setShowServiceModal(false)} style={styles.closeButton}>
+              <Ionicons name="close-circle" size={32} color="#4CAF50" />
+            </TouchableOpacity>
             <Text style={styles.modalHeader}>Select a Service</Text>
             {availableServices.map((service, index) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => {
-                  setSelectedService(service.label);
-                  addService();
-                }}
+                onPress={() => addService(service.label)}
                 style={styles.serviceOption}
               >
-                <Text style={styles.serviceOptionText}>{service.label}</Text>
+                <View style={styles.serviceOptionContent}>
+                  <Icon
+                    name={service.icon}
+                    size={22}
+                    color="#4CAF50"
+                    style={styles.serviceIcon}
+                  />
+                  <Text style={styles.serviceOptionText}>{service.label}</Text>
+                </View>
               </TouchableOpacity>
             ))}
-            <TouchableOpacity onPress={() => setShowServiceModal(false)} style={styles.closeButton}>
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* Finalize Event Button */}
       <TouchableOpacity onPress={finalizeEvent} style={styles.finalizeButton}>
         <Text style={styles.buttonText}>Finalize Event</Text>
       </TouchableOpacity>
 
-      {/* Services Added */}
       <View style={styles.servicesList}>
         <Text style={styles.servicesHeader}>Added Services:</Text>
         {services.map((service, index) => (
@@ -488,42 +764,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
     width: '80%',
     backgroundColor: '#fff',
     padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
+    borderRadius: 8,
     elevation: 5,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
   modalHeader: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#4CAF50',
+    textAlign: 'center',
+    marginBottom: 15,
   },
   serviceOption: {
-    padding: 12,
+    padding: 10,
     borderBottomWidth: 1,
     borderColor: '#ddd',
-    width: '100%',
+  },
+  serviceOptionContent: {
+    flexDirection: 'row',
     alignItems: 'center',
+  },
+  serviceIcon: {
+    marginRight: 10,
   },
   serviceOptionText: {
     fontSize: 16,
     color: '#333',
   },
-  closeButton: {
-    backgroundColor: '#f44336',
-    padding: 12,
-    borderRadius: 5,
-    marginTop: 10,
-    alignItems: 'center',
-  },
 });
-

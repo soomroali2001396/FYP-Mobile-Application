@@ -3,51 +3,53 @@ import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, M
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const venues = [
+const cateringOptions = [
   {
     id: '1',
-    name: 'Venue A',
-    description: 'Spacious venue for all kinds of events.',
-    city: 'New York',
+    name: 'Outdoor Catering',
+    description: 'Perfect for weddings and large outdoor events.',
+    location: 'California',
     image: 'https://via.placeholder.com/200',
-    rating: 4.5,
+    rating: 4.8,
     comments: [
       {
         id: '1',
-        username: 'john_doe',
-        text: 'Amazing experience! Highly recommended.',
+        username: 'susan_m',
+        text: 'Great food and setup for outdoor events!',
         photos: ['https://via.placeholder.com/100'],
       },
       {
         id: '2',
-        username: 'jane_smith',
-        text: 'Loved the ambiance and service.',
+        username: 'kevin_l',
+        text: 'Highly recommend for outdoor parties.',
         photos: ['https://via.placeholder.com/100'],
       },
     ],
     photos: ['https://via.placeholder.com/400', 'https://via.placeholder.com/400'],
+    category: 'Outdoor',
   },
   {
     id: '2',
-    name: 'Venue B',
-    description: 'Cozy venue perfect for intimate gatherings.',
-    city: 'Los Angeles',
+    name: 'Indoor Catering',
+    description: 'Ideal for conferences and indoor corporate events.',
+    location: 'New York',
     image: 'https://via.placeholder.com/200',
-    rating: 4.3,
+    rating: 4.6,
     comments: [
       {
         id: '3',
-        username: 'mark_z',
-        text: 'Perfect for a small get-together.',
+        username: 'julia_b',
+        text: 'Excellent service for indoor events.',
         photos: [],
       },
     ],
     photos: ['https://via.placeholder.com/400'],
+    category: 'Indoor',
   },
 ];
 
-export default function VenueSelection() {
-  const [selectedVenue, setSelectedVenue] = useState(null);
+export default function CateringSelection() {
+  const [selectedCatering, setSelectedCatering] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
   const [budget, setBudget] = useState(1000); // Default budget
@@ -57,19 +59,19 @@ export default function VenueSelection() {
 
   const navigation = useNavigation();
 
-  const handleAddVenue = (venue) => {
-    setSelectedVenue(venue);
+  const handleAddCatering = (catering) => {
+    setSelectedCatering(catering);
     setAddModalVisible(true);
   };
 
-  const handleViewDetails = (venue) => {
-    setSelectedVenue(venue);
+  const handleViewDetails = (catering) => {
+    setSelectedCatering(catering);
     setViewDetailsModalVisible(true);
   };
 
   const handlePlanSubmit = () => {
     navigation.navigate('Plan', {
-      venue: selectedVenue,
+      catering: selectedCatering,
       budget,
       people,
     });
@@ -115,33 +117,69 @@ export default function VenueSelection() {
     ));
   };
 
+  // Filter catering options by category
+  const outdoorCatering = cateringOptions.filter(option => option.category === 'Outdoor');
+  const indoorCatering = cateringOptions.filter(option => option.category === 'Indoor');
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Select a Venue</Text>
+      <Text style={styles.title}>Select a Catering Option</Text>
 
+      {/* Outdoor Catering Section */}
+      <Text style={styles.subtitle}>Outdoor Catering</Text>
       <FlatList
-        data={venues}
+        data={outdoorCatering}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.venueCard}>
-            <Image source={{ uri: item.image }} style={styles.venueImage} />
+          <View style={styles.cateringCard}>
+            <Image source={{ uri: item.image }} style={styles.cateringImage} />
             <View style={styles.details}>
-              <Text style={styles.venueName}>{item.name}</Text>
-              <Text style={styles.venueDescription}>{item.description}</Text>
-              <Text style={styles.venueCity}>City: {item.city}</Text>
-              <Text style={styles.venueRating}>Rating: {item.rating}</Text>
-              {/* View Details Button */}
+              <Text style={styles.cateringName}>{item.name}</Text>
+              <Text style={styles.cateringDescription}>{item.description}</Text>
+              <Text style={styles.cateringLocation}>Location: {item.location}</Text>
+              <Text style={styles.cateringRating}>Rating: {item.rating}</Text>
               <TouchableOpacity
                 style={styles.viewDetailButton}
                 onPress={() => handleViewDetails(item)}
               >
-                <Text style={styles.viewDetailText}>View Details</Text>
+                <MaterialCommunityIcons name="eye" size={24} color="#fff" />
+               
               </TouchableOpacity>
             </View>
-            {/* Add Button - Floating action button */}
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => handleAddVenue(item)}
+              onPress={() => handleAddCatering(item)}
+            >
+              <AntDesign name="plus" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+
+      {/* Indoor Catering Section */}
+      <Text style={styles.subtitle}>Indoor Catering</Text>
+      <FlatList
+        data={indoorCatering}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.cateringCard}>
+            <Image source={{ uri: item.image }} style={styles.cateringImage} />
+            <View style={styles.details}>
+              <Text style={styles.cateringName}>{item.name}</Text>
+              <Text style={styles.cateringDescription}>{item.description}</Text>
+              <Text style={styles.cateringLocation}>Location: {item.location}</Text>
+              <Text style={styles.cateringRating}>Rating: {item.rating}</Text>
+              <TouchableOpacity
+                style={styles.viewDetailButton}
+                onPress={() => handleViewDetails(item)}
+              >
+                <MaterialCommunityIcons name="eye" size={24} color="#fff" />
+                
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => handleAddCatering(item)}
             >
               <AntDesign name="plus" size={24} color="#fff" />
             </TouchableOpacity>
@@ -150,12 +188,12 @@ export default function VenueSelection() {
       />
 
       {/* View Details Modal */}
-      {selectedVenue && (
+      {selectedCatering && (
         <Modal visible={viewDetailsModalVisible} animationType="none" transparent onRequestClose={() => setViewDetailsModalVisible(false)}>
           <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
             <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Venue Details</Text>
+                <Text style={styles.modalTitle}>Catering Details</Text>
                 <View style={styles.modalActions}>
                   <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
                     <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
@@ -169,11 +207,11 @@ export default function VenueSelection() {
                 </View>
               </View>
               <ScrollView>
-                <Text style={styles.modalDescription}>{selectedVenue.description}</Text>
-                <Text style={styles.modalDescription}>City: {selectedVenue.city}</Text>
-                <Text style={styles.modalDescription}>Rating: {selectedVenue.rating}</Text>
+                <Text style={styles.modalDescription}>{selectedCatering.description}</Text>
+                <Text style={styles.modalDescription}>Location: {selectedCatering.location}</Text>
+                <Text style={styles.modalDescription}>Rating: {selectedCatering.rating}</Text>
                 <View style={styles.commentContainer}>
-                  {renderComments(selectedVenue.comments)}
+                  {renderComments(selectedCatering.comments)}
                 </View>
               </ScrollView>
             </View>
@@ -181,13 +219,13 @@ export default function VenueSelection() {
         </Modal>
       )}
 
-      {/* Add Venue Modal */}
-      {selectedVenue && (
+      {/* Add Catering Modal */}
+      {selectedCatering && (
         <Modal visible={addModalVisible} animationType="none" transparent onRequestClose={() => setAddModalVisible(false)}>
           <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
             <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Enter Event Details</Text>
+                <Text style={styles.modalTitle}>Add Catering</Text>
                 <View style={styles.modalActions}>
                   <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
                     <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
@@ -201,17 +239,22 @@ export default function VenueSelection() {
                 </View>
               </View>
               <ScrollView>
-                <Text style={styles.modalDescription}>{selectedVenue.description}</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Number of People"
-                  value={people}
-                  onChangeText={setPeople}
+                  placeholder="Enter number of people"
                   keyboardType="numeric"
+                  onChangeText={(text) => setPeople(text)}
+                  value={people}
                 />
-                <Text style={styles.modalDescription}>Budget: {budget}</Text>
-                <TouchableOpacity style={styles.button} onPress={handlePlanSubmit}>
-                  <Text style={styles.buttonText}>Add to Plan</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your budget"
+                  keyboardType="numeric"
+                  onChangeText={(text) => setBudget(text)}
+                  value={budget.toString()}
+                />
+                <TouchableOpacity style={styles.submitButton} onPress={handlePlanSubmit}>
+                  <Text style={styles.submitButtonText}>Submit Plan</Text>
                 </TouchableOpacity>
               </ScrollView>
             </View>
@@ -225,72 +268,70 @@ export default function VenueSelection() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ecf0f1',
     padding: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#2c3e50',
-    marginBottom: 20,
     textAlign: 'center',
+    marginVertical: 10,
   },
-  venueCard: {
+  subtitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  cateringCard: {
     flexDirection: 'row',
+    marginBottom: 15,
     backgroundColor: '#fff',
-    marginBottom: 20,
-    borderRadius: 15,
-    elevation: 6,
-    shadowColor: '#2c3e50',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    padding: 15,
-    position: 'relative',
+    borderRadius: 8,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
-  venueImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 15,
+  cateringImage: {
+    width: 100,
+    height: 100,
   },
   details: {
+    padding: 10,
     flex: 1,
-    marginLeft: 15,
-    justifyContent: 'space-between',
   },
-  venueName: {
-    fontSize: 22,
-    fontWeight: '600',
-    color: '#2980b9',
+  cateringName: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  venueDescription: {
+  cateringDescription: {
     fontSize: 14,
-    color: '#7f8c8d',
-    marginBottom: 8,
+    marginVertical: 5,
   },
-  venueCity: {
-    fontSize: 14,
+  cateringLocation: {
+    fontSize: 12,
     color: '#7f8c8d',
   },
-  venueRating: {
-    fontSize: 14,
+  cateringRating: {
+    fontSize: 12,
     color: '#f39c12',
   },
   viewDetailButton: {
-    backgroundColor: '#3498db',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    marginTop: 12,
+    backgroundColor: '#7f8c8d',
+    padding: 4,
+    borderRadius: 50,
+    marginLeft: 50,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   viewDetailText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    marginLeft: 5,
   },
   addButton: {
     position: 'absolute',
-    bottom: 70,
+    bottom: 10,
     right: 20,
     backgroundColor: '#6A4E36',
     padding: 15,
@@ -299,64 +340,76 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 5,
   },
-  commentContainer: {
-    marginTop: 10,
-    paddingVertical: 10,
-    borderTopWidth: 1,
+  input: {
+    borderWidth: 1,
     borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  submitButton: {
+    backgroundColor: '#3498db',
+    padding: 15,
+    borderRadius: 5,
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  commentContainer: {
+    marginVertical: 10,
   },
   commentHeader: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   commentUsername: {
-    marginLeft: 10,
     fontSize: 16,
+    marginLeft: 10,
     fontWeight: 'bold',
-    color: '#2980b9',
   },
   commentText: {
     fontSize: 14,
-    marginTop: 5,
-    color: '#34495e',
+    marginVertical: 5,
   },
   commentPhotosContainer: {
     flexDirection: 'row',
-    marginTop: 8,
+    marginTop: 10,
   },
   commentPhoto: {
     width: 50,
     height: 50,
-    borderRadius: 5,
+    borderRadius: 25,
     marginRight: 5,
   },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   maximizedOverlay: {
-    justifyContent: 'flex-start',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   modalContent: {
-    width: 320,
-    padding: 20,
+    width: '80%',
     backgroundColor: '#fff',
-    borderRadius: 20,
-    alignItems: 'center',
-    maxHeight: '80%',
-    elevation: 5,
+    borderRadius: 10,
+    padding: 20,
   },
   maximizedContent: {
     width: '90%',
-    height: '90%',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   modalActions: {
     flexDirection: 'row',
@@ -364,37 +417,8 @@ const styles = StyleSheet.create({
   modalActionButton: {
     marginLeft: 10,
   },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: '600',
-    color: '#34495e',
-  },
   modalDescription: {
-    fontSize: 14,
-    color: '#7f8c8d',
-    marginBottom: 20,
-  },
-  input: {
-    height: 45,
-    width: '100%',
-    borderColor: '#BDC3C7',
-    borderWidth: 1,
-    borderRadius: 15,
-    marginBottom: 20,
-    paddingLeft: 15,
-    backgroundColor: '#ecf0f1',
-  },
-  button: {
-    backgroundColor: '#3498db',
-    paddingVertical: 12,
-    paddingHorizontal: 50,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  buttonText: {
-    color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    marginVertical: 10,
   },
 });
-
