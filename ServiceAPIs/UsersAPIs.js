@@ -1,4 +1,4 @@
-const BASE_URL = 'http://192.168.1.4:8080/api/users';
+const BASE_URL = 'http://172.16.89.65:8080/api/users';
 
 export const Signupusers = async (users) => {
   const response = await fetch(`${BASE_URL}`, {
