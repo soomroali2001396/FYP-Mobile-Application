@@ -10,21 +10,21 @@
 // } from 'react-native';
 // import { Ionicons } from '@expo/vector-icons';
 // import { SafeAreaView } from 'react-native-safe-area-context';
-// import { useNavigation } from '@react-navigation/native'; // Import navigation hook
+// import { useNavigation } from '@react-navigation/native';
 
 // const events = [
 //   { id: 1, title: 'Bharat & Nikkah', status: 'Pending', helpers: ['Alice'] },
-//   { id: 2, title: 'Mehndi Fucntion', status: 'Complete', helpers: ['Bob', 'Charlie'] },
+//   { id: 2, title: 'Mehndi Function', status: 'Complete', helpers: ['Bob', 'Charlie'] },
 //   { id: 3, title: 'Dholki', status: 'Pending', helpers: [] },
 // ];
 
 // export default function DashboardScreen() {
-//   const navigation = useNavigation(); // Use navigation hook
+//   const navigation = useNavigation();
 //   const userName = 'Ali';
 //   const totalEvents = events.length;
 //   const eventsInProgress = events.filter((event) => event.status === 'Pending').length;
 //   const completedEvents = events.filter((event) => event.status === 'Complete').length;
-//   const [isHelperModalVisible, setHelperModalVisible] = useState(false); // Define the state
+//   const [isHelperModalVisible, setHelperModalVisible] = useState(false);
 //   const ongoingEvents = events.filter((event) => event.status === 'Pending');
 
 //   return (
@@ -37,36 +37,37 @@
 //         <View style={styles.summaryContainer}>
 //           <Text style={styles.summaryTitle}>Event Summary</Text>
 //           <View style={styles.summaryRow}>
-//             <SummaryItem 
-//                 title="Total Events" 
-//                 count={totalEvents} 
-//                 icon="calendar-outline" 
-//                 color="#6A4E36" 
+//             <SummaryItem
+//               title="Total Events"
+//               count={totalEvents}
+//               icon="calendar-outline"
+//               color="#6A4E36"
+//               onPress={() => navigation.navigate('Eventprogress')}
 //             />
-//             <SummaryItem 
-//                 title="In Progress" 
-//                 count={eventsInProgress} 
-//                 icon="hourglass-outline" 
-//                 color="#FFA500" // Orange for 'In Progress'
+//             <SummaryItem
+//               title="In Progress"
+//               count={eventsInProgress}
+//               icon="hourglass-outline"
+//               color="#FFA500"
 //             />
-//             <SummaryItem 
-//                 title="Completed" 
-//                 count={completedEvents} 
-//                 icon="checkmark-circle-outline" 
-//                 color="#28A745" // Green for 'Completed'
+//             <SummaryItem
+//               title="Completed"
+//               count={completedEvents}
+//               icon="checkmark-circle-outline"
+//               color="#28A745"
 //             />
 //           </View>
 //         </View>
 
 //         {/* Create New Event Button */}
-//         <TouchableOpacity style={styles.createEventButton}  onPress={() => navigation.navigate('Plan')}>
+//         <TouchableOpacity style={styles.createEventButton} onPress={() => navigation.navigate('Plan')}>
 //           <Ionicons name="add-circle-outline" size={24} color="white" />
 //           <Text style={styles.createEventButtonText}>Create New Event</Text>
 //         </TouchableOpacity>
 
 //         {/* Ongoing Events */}
 //         <Text style={styles.sectionTitle}>Ongoing Events</Text>
-//         {events.slice(0, 3).map((event) => (
+//         {ongoingEvents.map((event) => (
 //           <View key={event.id} style={styles.eventCard}>
 //             <Text style={styles.eventTitle}>{event.title}</Text>
 //             <Text style={styles.eventStatus}>Status: {event.status}</Text>
@@ -79,9 +80,9 @@
 //           <Text style={styles.helperSummary}>
 //             {events.reduce((total, event) => total + event.helpers.length, 0)} helpers involved in events
 //           </Text>
-//           <TouchableOpacity 
+//           <TouchableOpacity
 //             style={styles.manageHelpersButton}
-//             onPress={() => setHelperModalVisible(true)} // Show modal when clicked
+//             onPress={() => setHelperModalVisible(true)}
 //           >
 //             <Text style={styles.manageHelpersButtonText}>Manage Helpers</Text>
 //           </TouchableOpacity>
@@ -97,27 +98,25 @@
 //           <View style={styles.modalContainer}>
 //             <View style={styles.modalContent}>
 //               <Text style={styles.modalTitle}>Helper Management</Text>
-//               <TouchableOpacity 
+//               <TouchableOpacity
 //                 style={styles.modalButton}
 //                 onPress={() => {
-//                   // Navigate to Helper Form and pass ongoing events
 //                   setHelperModalVisible(false);
-//                   navigation.navigate('Helperform', { ongoingEvents });
+//                   navigation.navigate('Helperform');
 //                 }}
 //               >
 //                 <Text style={styles.modalButtonText}>Add New Helper</Text>
 //               </TouchableOpacity>
-//               <TouchableOpacity 
+//               <TouchableOpacity
 //                 style={styles.modalButton}
 //                 onPress={() => {
-//                   // Handle "Adjust Existing Helper" functionality
 //                   setHelperModalVisible(false);
-//                   navigation.navigate('Existinghelper', { ongoingEvents });
+//                   navigation.navigate('Existinghelper');
 //                 }}
 //               >
 //                 <Text style={styles.modalButtonText}>Adjust Existing Helper</Text>
 //               </TouchableOpacity>
-//               <TouchableOpacity 
+//               <TouchableOpacity
 //                 style={styles.modalCloseButton}
 //                 onPress={() => setHelperModalVisible(false)}
 //               >
@@ -126,12 +125,13 @@
 //             </View>
 //           </View>
 //         </Modal>
+
 //         {/* Quick Links */}
 //         <View style={styles.quickLinksContainer}>
 //           <QuickLinkButton
 //             title="Settings"
 //             icon="settings-outline"
-//             onPress={() => navigation.navigate('Profile')} // Navigate to Profile screen
+//             onPress={() => navigation.navigate('Profile')}
 //           />
 //         </View>
 //       </ScrollView>
@@ -139,13 +139,13 @@
 //   );
 // }
 
-// function SummaryItem({ title, count, icon, color }) {
+// function SummaryItem({ title, count, icon, color, onPress }) {
 //   return (
-//     <View style={styles.summaryItem}>
-//       <Ionicons name={icon} size={24} color={color} /> {/* Apply dynamic color */}
-//       <Text style={[styles.summaryItemCount, { color }]}>{count}</Text> {/* Use the same color for the count */}
+//     <TouchableOpacity style={styles.summaryItem} onPress={onPress}>
+//       <Ionicons name={icon} size={24} color={color} />
+//       <Text style={[styles.summaryItemCount, { color }]}>{count}</Text>
 //       <Text style={styles.summaryItemTitle}>{title}</Text>
-//     </View>
+//     </TouchableOpacity>
 //   );
 // }
 
@@ -345,7 +345,6 @@
 //     fontWeight: 'bold',
 //   },
 // });
-
 import React, { useState } from 'react';
 import {
   View,
@@ -357,7 +356,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const events = [
   { id: 1, title: 'Bharat & Nikkah', status: 'Pending', helpers: ['Alice'] },
@@ -367,7 +366,11 @@ const events = [
 
 export default function DashboardScreen() {
   const navigation = useNavigation();
-  const userName = 'Ali';
+  const route = useRoute();
+
+  // Retrieve email from route parameters
+  const userName = route.params?.email || 'User';
+
   const totalEvents = events.length;
   const eventsInProgress = events.filter((event) => event.status === 'Pending').length;
   const completedEvents = events.filter((event) => event.status === 'Complete').length;
@@ -508,7 +511,7 @@ function QuickLinkButton({ title, icon, onPress }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#F9F3EC',
+    backgroundColor: '#F9F3EC',
   },
   scrollContainer: {
     paddingBottom: 16,
@@ -631,8 +634,8 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
-    flexDirection: 'row',
-    shadowColor: '#6A4E36',
+    marginBottom: 8,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -640,55 +643,45 @@ const styles = StyleSheet.create({
   },
   quickLinkButtonText: {
     color: '#6A4E36',
-    marginLeft: 8,
-    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 8,
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    width: '80%',
     backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    padding: 16,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 16,
     color: '#333',
   },
   modalButton: {
-    backgroundColor: '#6A4E36',
+    backgroundColor: '#F0F0F5',
     padding: 12,
     borderRadius: 8,
-    width: '100%',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   modalButtonText: {
-    color: 'white',
+    color: '#6A4E36',
     fontWeight: 'bold',
-    fontSize: 16,
   },
   modalCloseButton: {
-    backgroundColor: '#F0F0F5',
-    padding: 10,
+    padding: 12,
     borderRadius: 8,
-    width: '100%',
     alignItems: 'center',
+    backgroundColor: '#6A4E36',
   },
   modalCloseButtonText: {
-    color: '#6A4E36',
+    color: 'white',
     fontWeight: 'bold',
   },
 });

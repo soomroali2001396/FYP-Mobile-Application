@@ -1,7 +1,9 @@
-const BASE_URL = 'http://172.16.89.65:8080/api/users';
+
+
+export const BASE_URL = 'http://192.168.1.12:8080/api';
 
 export const Signupusers = async (users) => {
-  const response = await fetch(`${BASE_URL}`, {
+  const response = await fetch(`${BASE_URL}/users`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(users),
@@ -12,7 +14,7 @@ export const Signupusers = async (users) => {
 
 export const loginUsers = async (email, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/login`, {
+    const response = await fetch(`${BASE_URL}/users/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -20,8 +22,6 @@ export const loginUsers = async (email, password) => {
         userPassword: password,
       }),
     });
-
-    
     const text = await response.text(); // Read raw response as text for debugging
     console.log('Raw Response:', text);
 
@@ -55,3 +55,108 @@ export const loginUsers = async (email, password) => {
 
 //   return response.json();
 // };
+
+
+export const ServiceCatering = async () => {
+  const url = `${BASE_URL}/services/search/type?type=catering`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check for HTTP errors
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    }
+
+    // Parse and return the JSON data
+    const data = await response.json();
+    // console.log('ServiceCatering Response Data:', data); // Logs the data for debugging
+    return data;
+  } catch (error) {
+    console.error('Error fetching catering service data:', error.message);
+    throw error; // Ensure error is rethrown for proper handling
+  }
+};
+
+export const ServiceVenue = async () => {
+  const url = `${BASE_URL}/services/search/type?type=venue`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check for HTTP errors
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    }
+
+    // Parse and return the JSON data
+    const data = await response.json();
+    // console.log('ServiceCatering Response Data:', data); // Logs the data for debugging
+    return data;
+  } catch (error) {
+    console.error('Error fetching catering service data:', error.message);
+    throw error; // Ensure error is rethrown for proper handling
+  }
+};
+
+export const ServiceTransportation = async () => {
+  const url = `${BASE_URL}/services/search/type?type=catering`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check for HTTP errors
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    }
+
+    // Parse and return the JSON data
+    const data = await response.json();
+    // console.log('ServiceCatering Response Data:', data); // Logs the data for debugging
+    return data;
+  } catch (error) {
+    console.error('Error fetching catering service data:', error.message);
+    throw error; // Ensure error is rethrown for proper handling
+  }
+};
+
+export const ServiceDecoration = async () => {
+  const url = `${BASE_URL}/services/search/type?type=decoration`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check for HTTP errors
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    }
+
+    // Parse and return the JSON data
+    const data = await response.json();
+    // console.log('ServiceCatering Response Data:', data); // Logs the data for debugging
+    return data;
+  } catch (error) {
+    console.error('Error fetching catering service data:', error.message);
+    throw error; // Ensure error is rethrown for proper handling
+  }
+};

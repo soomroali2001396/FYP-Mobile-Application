@@ -1,52 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import {ServiceVenue,BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import the API function
 
-const venues = [
-  {
-    id: '1',
-    name: 'Venue A',
-    description: 'Spacious venue for all kinds of events.',
-    city: 'New York',
-    image: 'https://via.placeholder.com/200',
-    rating: 4.5,
-    comments: [
-      {
-        id: '1',
-        username: 'john_doe',
-        text: 'Amazing experience! Highly recommended.',
-        photos: ['https://via.placeholder.com/100'],
-      },
-      {
-        id: '2',
-        username: 'jane_smith',
-        text: 'Loved the ambiance and service.',
-        photos: ['https://via.placeholder.com/100'],
-      },
-    ],
-    photos: ['https://via.placeholder.com/400', 'https://via.placeholder.com/400'],
-  },
-  {
-    id: '2',
-    name: 'Venue B',
-    description: 'Cozy venue perfect for intimate gatherings.',
-    city: 'Los Angeles',
-    image: 'https://via.placeholder.com/200',
-    rating: 4.3,
-    comments: [
-      {
-        id: '3',
-        username: 'mark_z',
-        text: 'Perfect for a small get-together.',
-        photos: [],
-      },
-    ],
-    photos: ['https://via.placeholder.com/400'],
-  },
-];
 
 export default function VenueSelection() {
+  const [venues, setVenues] = useState([]); // State for fetched data
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
@@ -55,7 +15,38 @@ export default function VenueSelection() {
   const [isMaximized, setIsMaximized] = useState(false);
   const [translateY] = useState(new Animated.Value(0));
 
+
   const navigation = useNavigation();
+
+  // for fetch data 
+  useEffect(() => {
+    // Fetch data from the API when the component loads
+    const fetchVenues = async () => {
+      try {
+        const data = await ServiceVenue();
+        // Transform data into the required structure if needed
+        const transformedData = data.map((item) => ({
+          id: item.serviceId,
+          name: item.serviceName,
+          description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price: ${item.servicePrice}`,
+          type: item.serviceType,
+          address: item.serviceArea,
+          capacity: item.serviceCapacity,
+          price: item.servicePrice,
+          city: item.serviceCity,
+          rating: 4.5, // Hardcoded rating if not provided by API
+          image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`, // Use the image URL from API
+        }));
+        setVenues(transformedData);
+      } catch (error) {
+        console.error('Error fetching venues:', error.message);
+      }
+    };
+
+    fetchVenues();
+  }, []);
+
+
 
   const handleAddVenue = (venue) => {
     setSelectedVenue(venue);
@@ -120,8 +111,8 @@ export default function VenueSelection() {
       <Text style={styles.title}>Select a Venue</Text>
 
       <FlatList
-        data={venues}
-        keyExtractor={(item) => item.id}
+        data={venues} // Use the fetched data
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.venueCard}>
             <Image source={{ uri: item.image }} style={styles.venueImage} />
@@ -138,7 +129,7 @@ export default function VenueSelection() {
                 <Text style={styles.viewDetailText}>View Details</Text>
               </TouchableOpacity>
             </View>
-            {/* Add Button - Floating action button */}
+            {/* Add Button */}
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => handleAddVenue(item)}
@@ -173,7 +164,7 @@ export default function VenueSelection() {
                 <Text style={styles.modalDescription}>City: {selectedVenue.city}</Text>
                 <Text style={styles.modalDescription}>Rating: {selectedVenue.rating}</Text>
                 <View style={styles.commentContainer}>
-                  {renderComments(selectedVenue.comments)}
+                  {/* {renderComments(selectedVenue.comments)} */}
                 </View>
               </ScrollView>
             </View>
@@ -204,7 +195,7 @@ export default function VenueSelection() {
                 <Text style={styles.modalDescription}>{selectedVenue.description}</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Number of People"
+                  placeholder="Enter number of people"
                   value={people}
                   onChangeText={setPeople}
                   keyboardType="numeric"
@@ -225,7 +216,7 @@ export default function VenueSelection() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#F9F3EC',
     padding: 20,
   },
   title: {
@@ -237,7 +228,7 @@ const styles = StyleSheet.create({
   },
   venueCard: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: '#C8B29E',
     marginBottom: 20,
     borderRadius: 15,
     elevation: 6,
@@ -261,27 +252,29 @@ const styles = StyleSheet.create({
   venueName: {
     fontSize: 22,
     fontWeight: '600',
-    color: '#2980b9',
+    color: '#1f1f1f',
   },
   venueDescription: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: '#fff',
     marginBottom: 8,
   },
   venueCity: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: '#fff',
   },
   venueRating: {
     fontSize: 14,
-    color: '#f39c12',
+    color: '#00A5A8',
+    fontWeight: 'bold',
   },
   viewDetailButton: {
-    backgroundColor: '#3498db',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
+    backgroundColor: '#1f1f1f',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
     borderRadius: 25,
-    marginTop: 12,
+    marginTop: 10,
+    elevation: 3,
   },
   viewDetailText: {
     color: '#fff',
@@ -340,9 +333,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   modalContent: {
-    width: 320,
+    width: 350,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#F9F3EC',
     borderRadius: 20,
     alignItems: 'center',
     maxHeight: '80%',
@@ -371,7 +364,7 @@ const styles = StyleSheet.create({
   },
   modalDescription: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: '#2c3e50',
     marginBottom: 20,
   },
   input: {
@@ -385,11 +378,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ecf0f1',
   },
   button: {
-    backgroundColor: '#3498db',
-    paddingVertical: 12,
-    paddingHorizontal: 50,
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: '#1f1f1f',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    marginTop: 10,
+    elevation: 3,
   },
   buttonText: {
     color: '#fff',
@@ -397,4 +391,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-

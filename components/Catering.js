@@ -1,54 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-
-const cateringOptions = [
-  {
-    id: '1',
-    name: 'Outdoor Catering',
-    description: 'Perfect for weddings and large outdoor events.',
-    location: 'California',
-    image: 'https://via.placeholder.com/200',
-    rating: 4.8,
-    comments: [
-      {
-        id: '1',
-        username: 'susan_m',
-        text: 'Great food and setup for outdoor events!',
-        photos: ['https://via.placeholder.com/100'],
-      },
-      {
-        id: '2',
-        username: 'kevin_l',
-        text: 'Highly recommend for outdoor parties.',
-        photos: ['https://via.placeholder.com/100'],
-      },
-    ],
-    photos: ['https://via.placeholder.com/400', 'https://via.placeholder.com/400'],
-    category: 'Outdoor',
-  },
-  {
-    id: '2',
-    name: 'Indoor Catering',
-    description: 'Ideal for conferences and indoor corporate events.',
-    location: 'New York',
-    image: 'https://via.placeholder.com/200',
-    rating: 4.6,
-    comments: [
-      {
-        id: '3',
-        username: 'julia_b',
-        text: 'Excellent service for indoor events.',
-        photos: [],
-      },
-    ],
-    photos: ['https://via.placeholder.com/400'],
-    category: 'Indoor',
-  },
-];
+import { ServiceCatering,BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import the API function
 
 export default function CateringSelection() {
+  const [cateringOptions, setCateringOptions] = useState([]); // State for fetched catering data
   const [selectedCatering, setSelectedCatering] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
@@ -58,6 +15,32 @@ export default function CateringSelection() {
   const [translateY] = useState(new Animated.Value(0));
 
   const navigation = useNavigation();
+
+  // Fetch catering data on component mount
+  useEffect(() => {
+    const fetchCatering = async () => {
+      try {
+        const data = await ServiceCatering();
+        const transformedData = data.map((item) => ({
+          id: item.serviceId,
+          name: item.serviceName,
+          description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price: ${item.servicePrice}`,
+          type: item.serviceType,
+          address: item.serviceArea,
+          capacity: item.serviceCapacity,
+          price: item.servicePrice,
+          city: item.serviceCity,
+          rating: 4.5, // Hardcoded rating if not provided by API
+          image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`, // Use the image URL from API
+        }));
+        setCateringOptions(transformedData);
+      } catch (error) {
+        console.error('Error fetching catering options:', error.message);
+      }
+    };
+
+    fetchCatering();
+  }, []);
 
   const handleAddCatering = (catering) => {
     setSelectedCatering(catering);
@@ -81,7 +64,7 @@ export default function CateringSelection() {
   const toggleMaximize = () => {
     setIsMaximized(!isMaximized);
     Animated.timing(translateY, {
-      toValue: isMaximized ? 0 : -50, // Animation for maximize/minimize
+      toValue: isMaximized ? 0 : -50,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -89,7 +72,7 @@ export default function CateringSelection() {
 
   const minimizeModal = () => {
     Animated.timing(translateY, {
-      toValue: 600, // Move modal down
+      toValue: 600,
       duration: 300,
       useNativeDriver: true,
     }).start(() => {
@@ -98,90 +81,32 @@ export default function CateringSelection() {
     });
   };
 
-  const renderComments = (comments) => {
-    return comments.map((comment) => (
-      <View key={comment.id} style={styles.commentContainer}>
-        <View style={styles.commentHeader}>
-          <MaterialCommunityIcons name="account-circle" size={36} color="#3498db" />
-          <Text style={styles.commentUsername}>{comment.username}</Text>
-        </View>
-        <Text style={styles.commentText}>{comment.text}</Text>
-        {comment.photos.length > 0 && (
-          <View style={styles.commentPhotosContainer}>
-            {comment.photos.map((photo, index) => (
-              <Image key={index} source={{ uri: photo }} style={styles.commentPhoto} />
-            ))}
-          </View>
-        )}
-      </View>
-    ));
-  };
-
-  // Filter catering options by category
-  const outdoorCatering = cateringOptions.filter(option => option.category === 'Outdoor');
-  const indoorCatering = cateringOptions.filter(option => option.category === 'Indoor');
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select a Catering Option</Text>
-
-      {/* Outdoor Catering Section */}
-      <Text style={styles.subtitle}>Outdoor Catering</Text>
       <FlatList
-        data={outdoorCatering}
-        keyExtractor={(item) => item.id}
+        data={cateringOptions}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.cateringCard}>
             <Image source={{ uri: item.image }} style={styles.cateringImage} />
             <View style={styles.details}>
               <Text style={styles.cateringName}>{item.name}</Text>
               <Text style={styles.cateringDescription}>{item.description}</Text>
-              <Text style={styles.cateringLocation}>Location: {item.location}</Text>
+              <Text style={styles.cateringLocation}>Location: {item.city}</Text>
               <Text style={styles.cateringRating}>Rating: {item.rating}</Text>
               <TouchableOpacity
                 style={styles.viewDetailButton}
                 onPress={() => handleViewDetails(item)}
               >
                 <MaterialCommunityIcons name="eye" size={24} color="#fff" />
-               
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => handleAddCatering(item)}
             >
-              <AntDesign name="plus" size={24} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-
-      {/* Indoor Catering Section */}
-      <Text style={styles.subtitle}>Indoor Catering</Text>
-      <FlatList
-        data={indoorCatering}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.cateringCard}>
-            <Image source={{ uri: item.image }} style={styles.cateringImage} />
-            <View style={styles.details}>
-              <Text style={styles.cateringName}>{item.name}</Text>
-              <Text style={styles.cateringDescription}>{item.description}</Text>
-              <Text style={styles.cateringLocation}>Location: {item.location}</Text>
-              <Text style={styles.cateringRating}>Rating: {item.rating}</Text>
-              <TouchableOpacity
-                style={styles.viewDetailButton}
-                onPress={() => handleViewDetails(item)}
-              >
-                <MaterialCommunityIcons name="eye" size={24} color="#fff" />
-                
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => handleAddCatering(item)}
-            >
-              <AntDesign name="plus" size={24} color="#fff" />
+              <Text style={{ color: '#fff' }}>Add</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -208,10 +133,10 @@ export default function CateringSelection() {
               </View>
               <ScrollView>
                 <Text style={styles.modalDescription}>{selectedCatering.description}</Text>
-                <Text style={styles.modalDescription}>Location: {selectedCatering.location}</Text>
+                <Text style={styles.modalDescription}>Location: {selectedCatering.address}</Text>
                 <Text style={styles.modalDescription}>Rating: {selectedCatering.rating}</Text>
                 <View style={styles.commentContainer}>
-                  {renderComments(selectedCatering.comments)}
+                  {/* {renderComments(selectedCatering.comments)} */}
                 </View>
               </ScrollView>
             </View>
@@ -422,3 +347,22 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
+
+// const renderComments = (comments) => {
+//   return comments.map((comment) => (
+//     <View key={comment.id} style={styles.commentContainer}>
+//       <View style={styles.commentHeader}>
+//         <MaterialCommunityIcons name="account-circle" size={36} color="#3498db" />
+//         <Text style={styles.commentUsername}>{comment.username}</Text>
+//       </View>
+//       <Text style={styles.commentText}>{comment.text}</Text>
+//       {comment.photos.length > 0 && (
+//         <View style={styles.commentPhotosContainer}>
+//           {comment.photos.map((photo, index) => (
+//             <Image key={index} source={{ uri: photo }} style={styles.commentPhoto} />
+//           ))}
+//         </View>
+//       )}
+//     </View>
+//   ));
+// };
