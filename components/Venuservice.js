@@ -14,6 +14,7 @@ export default function VenueSelection() {
   const [people, setPeople] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
   const [translateY] = useState(new Animated.Value(0));
+  const [calculatedBudget, setCalculatedBudget] = useState(0);
 
 
   const navigation = useNavigation();
@@ -58,14 +59,40 @@ export default function VenueSelection() {
     setViewDetailsModalVisible(true);
   };
 
+  // const handlePlanSubmit = () => {
+  //   navigation.navigate('Plan', {
+  //     venue: selectedVenue,
+  //     budget,
+  //     people,
+  //   });
+  //   setAddModalVisible(false);
+  // };
   const handlePlanSubmit = () => {
+    if (!people || isNaN(people) || parseInt(people) <= 0) {
+      alert('Please enter a valid number of people');
+      return;
+    }
+
+    // Calculate the budget for the venue
+    const price = selectedVenue.price;
+    const capacity = selectedVenue.capacity;
+
+    // Calculate the venue's budget based on number of people
+    const venueBudget = (price / capacity) * parseInt(people);
+
+    // Calculate the total cost for the selected services
+    const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
+
+    // Calculate the total budget
+    // const updatedBudget = parseFloat(venueBudget) + servicesBudget;
+    setCalculatedBudget(venueBudget);
+
+    // Pass the updated budget to Plan.js
     navigation.navigate('Plan', {
-      venue: selectedVenue,
-      budget,
-      people,
+      estimatedBudget: venueBudget,
     });
-    setAddModalVisible(false);
   };
+  
 
   const toggleMaximize = () => {
     setIsMaximized(!isMaximized);
@@ -200,7 +227,6 @@ export default function VenueSelection() {
                   onChangeText={setPeople}
                   keyboardType="numeric"
                 />
-                <Text style={styles.modalDescription}>Budget: {budget}</Text>
                 <TouchableOpacity style={styles.button} onPress={handlePlanSubmit}>
                   <Text style={styles.buttonText}>Add to Plan</Text>
                 </TouchableOpacity>
