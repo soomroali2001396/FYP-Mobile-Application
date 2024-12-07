@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
 
 import { loginUsers } from '../ServiceAPIs/UsersAPIs'; // Import the API function
+import { setUserSession,getUserSession } from '../ServiceAPIs/UserSession'; 
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -18,6 +19,19 @@ const Login = ({ navigation }) => {
     try {
       const response = await loginUsers(email, password);
       console.log('Login successful:', response);
+      // Store user session data
+      const { userId, userName, userEmail } = response;
+      await setUserSession({
+        userId,
+        userName,
+        userEmail,
+        userPassword: response.userPassword,
+        userPhone: response.userPhone,
+        userLocation: response.userLocation,
+        userDateOfBirth: response.userDateOfBirth,
+        userImage: response.userImage,
+      });
+      console.log(getUserSession());
       navigation.navigate('Main');
     } catch (error) {
       alert(`Login failed: ${error.message}`);
