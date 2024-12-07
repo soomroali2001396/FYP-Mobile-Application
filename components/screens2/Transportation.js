@@ -1,102 +1,122 @@
-// // TransportSelectionScreen.js
-// import React from 'react';
-// import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, TextInput, Animated } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import {ServiceTransportation,BASE_URL } from '../../ServiceAPIs/UsersAPIs'; // Import the API function
 
-// const TransportSelectionScreen = ({ navigation }) => {
-//   const transports = [
-//     { id: '1', name: 'Bus' },
-//     { id: '2', name: 'Car' },
-//   ];
+// export default function TransportSelection() {
+//   const [transports, setTransports] = useState([
+//     { 
+//       id: 1, 
+//       name: "Luxury Bus", 
+//       description: "Type: Luxury, Capacity: 40, Price: $1000", 
+//       city: "New York", 
+//       rating: 4.5, 
+//       image: "https://via.placeholder.com/120" 
+//     },
+//     { 
+//       id: 2, 
+//       name: "Private Car", 
+//       description: "Type: Sedan, Capacity: 4, Price: $500", 
+//       city: "Los Angeles", 
+//       rating: 4.0, 
+//       image: "https://via.placeholder.com/120" 
+//     },
+//     { 
+//       id: 3, 
+//       name: "Minivan", 
+//       description: "Type: Van, Capacity: 8, Price: $700", 
+//       city: "Chicago", 
+//       rating: 4.3, 
+//       image: "https://via.placeholder.com/120" 
+//     },
+//     // Add more transport items as needed
+//   ]);
 
-//   const handleTransportSelect = (transport) => {
-//     if (transport.name === 'Car') {
-//       navigation.navigate('Car');
-//     }
+//   const [selectedTransport, setSelectedTransport] = useState(null);
+//   const [addModalVisible, setAddModalVisible] = useState(false);
+//   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
+//   const [budget, setBudget] = useState(1000); // Default budget
+//   const [people, setPeople] = useState('');
+//   const [isMaximized, setIsMaximized] = useState(false);
+//   const [translateY] = useState(new Animated.Value(0));
+
+//   const navigation = useNavigation();
+
+//   const handleAddTransport = (transport) => {
+//     setSelectedTransport(transport);
+//     setAddModalVisible(true);
+//   };
+
+//   const handleViewDetails = (transport) => {
+//     setSelectedTransport(transport);
+//     setViewDetailsModalVisible(true);
+//   };
+
+//   const handlePlanSubmit = () => {
+//     navigation.navigate('Plan', {
+//       transport: selectedTransport,
+//       budget,
+//       people,
+//     });
+//     setAddModalVisible(false);
+//   };
+
+//   const toggleMaximize = () => {
+//     setIsMaximized(!isMaximized);
+//     Animated.timing(translateY, {
+//       toValue: isMaximized ? 0 : -50, // Animation for maximize/minimize
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start();
+//   };
+
+//   const minimizeModal = () => {
+//     Animated.timing(translateY, {
+//       toValue: 600, // Move modal down
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start(() => {
+//       setAddModalVisible(false);
+//       setViewDetailsModalVisible(false);
+//     });
 //   };
 
 //   return (
 //     <View style={styles.container}>
-//       <Text style={styles.subtitle}>Which type of transportation you want for your Event?</Text>
+//       <Text style={styles.title}>Select a Transport</Text>
+
 //       <FlatList
-//         data={transports}
+//         data={transports} // Display transport cards
+//         keyExtractor={(item) => item.id.toString()}
 //         renderItem={({ item }) => (
-//           <TouchableOpacity
-//             style={styles.transportButton}
-//             onPress={() => handleTransportSelect(item)}
-//           >
-//             <Text style={styles.transportText}>{item.name}</Text>
-//           </TouchableOpacity>
+//           <View style={styles.transportCard}>
+//             <Image source={{ uri: item.image }} style={styles.transportImage} />
+//             <View style={styles.details}>
+//               <Text style={styles.transportName}>{item.name}</Text>
+//               <Text style={styles.transportDescription}>{item.description}</Text>
+//               <Text style={styles.transportCity}>City: {item.city}</Text>
+//               <Text style={styles.transportRating}>Rating: {item.rating}</Text>
+//               {/* View Details Button */}
+//               <TouchableOpacity
+//                 style={styles.viewDetailButton}
+//                 onPress={() => handleViewDetails(item)}
+//               >
+//                 <Text style={styles.viewDetailText}>View Details</Text>
+//               </TouchableOpacity>
+//             </View>
+//             {/* Add Button */}
+//             <TouchableOpacity
+//               style={styles.addButton}
+//               onPress={() => handleAddTransport(item)}
+//             >
+//               <AntDesign name="plus" size={24} color="#fff" />
+//             </TouchableOpacity>
+//           </View>
 //         )}
-//         keyExtractor={(item) => item.id}
 //       />
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     backgroundColor: '#F9F3EC',
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     marginBottom: 20,
-//   },
-//   subtitle: {
-//     fontSize: 16,
-//     marginBottom: 10,
-//     fontWeight: 'bold',
-//   },
-//   transportButton: {
-//     backgroundColor: '#6A4E36',
-//     padding: 15,
-//     borderRadius: 10,
-//     marginBottom: 10,
-//   },
-//   transportText: {
-//     fontSize: 18,
-//     color: 'white',
-//     textAlign: 'center',
-//   },
-// });
-
-// export default TransportSelectionScreen;
-import React, { useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, TextInput, Animated } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-
 export default function TransportSelection() {
-  const [transports, setTransports] = useState([
-    { 
-      id: 1, 
-      name: "Luxury Bus", 
-      description: "Type: Luxury, Capacity: 40, Price: $1000", 
-      city: "New York", 
-      rating: 4.5, 
-      image: "https://via.placeholder.com/120" 
-    },
-    { 
-      id: 2, 
-      name: "Private Car", 
-      description: "Type: Sedan, Capacity: 4, Price: $500", 
-      city: "Los Angeles", 
-      rating: 4.0, 
-      image: "https://via.placeholder.com/120" 
-    },
-    { 
-      id: 3, 
-      name: "Minivan", 
-      description: "Type: Van, Capacity: 8, Price: $700", 
-      city: "Chicago", 
-      rating: 4.3, 
-      image: "https://via.placeholder.com/120" 
-    },
-    // Add more transport items as needed
-  ]);
-
+  const [transports, setTransports] = useState([]); // State for fetched transport data
   const [selectedTransport, setSelectedTransport] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
@@ -106,6 +126,32 @@ export default function TransportSelection() {
   const [translateY] = useState(new Animated.Value(0));
 
   const navigation = useNavigation();
+
+  // Fetch transport data on component mount
+  useEffect(() => {
+    const fetchTransports = async () => {
+      try {
+        const data = await ServiceTransportation();
+        const transformedData = data.map((item) => ({
+          id: item.serviceId,
+          name: item.serviceName,
+          description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price: ${item.servicePrice}`,
+          type: item.serviceType,
+          address: item.serviceArea,
+          capacity: item.serviceCapacity,
+          price: item.servicePrice,
+          city: item.serviceCity,
+          rating: 4.5, // Hardcoded rating if not provided by API
+          image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`, // Use the image URL from API
+        }));
+        setTransports(transformedData);
+      } catch (error) {
+        console.error('Error fetching transport options:', error.message);
+      }
+    };
+
+    fetchTransports();
+  }, []);
 
   const handleAddTransport = (transport) => {
     setSelectedTransport(transport);
@@ -149,9 +195,8 @@ export default function TransportSelection() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select a Transport</Text>
-
       <FlatList
-        data={transports} // Display transport cards
+        data={transports} // Display fetched transport data
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.transportCard}>
@@ -179,7 +224,6 @@ export default function TransportSelection() {
           </View>
         )}
       />
-
       {/* View Details Modal */}
       {selectedTransport && (
         <Modal visible={viewDetailsModalVisible} animationType="none" transparent onRequestClose={() => setViewDetailsModalVisible(false)}>
