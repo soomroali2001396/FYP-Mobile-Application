@@ -652,19 +652,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#F9F3EC',
   },
   searchContainer: {
     marginBottom: 15,
   },
   searchInput: {
-    height: 45,
-    borderWidth: 1,
+    width: '100%',
+    height: 50,
     borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    marginBottom: 10,
+    borderWidth: 1,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    elevation: 2,
   },
   categoryButtonsContainer: {
     flexDirection: 'row',
@@ -678,7 +680,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   selectedCategoryButton: {
-    backgroundColor: '#00796b',
+    backgroundColor: '#6A4E36',
   },
   categoryButtonText: {
     color: '#fff',
@@ -688,7 +690,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#C8B29E',
     borderRadius: 10,
     marginBottom: 20,
     overflow: 'hidden',
@@ -712,7 +714,7 @@ const styles = StyleSheet.create({
   },
   cardDescription: {
     fontSize: 14,
-    color: '#757575',
+    color: '#f',
     marginBottom: 15,
   },
   buttonContainer: {
@@ -720,16 +722,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   actionButton: {
-    backgroundColor: '#00796b',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#6A4E36',
+    padding: 15,
+    borderRadius: 25,
     flexDirection: 'row',
     alignItems: 'center',
   },
   actionButtonAdd: {
-    backgroundColor: '#5f6368',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#1f1f1f',
+    padding: 15,
+    borderRadius: 25,
     flexDirection: 'row',
     alignItems: 'center',
   },

@@ -81,7 +81,7 @@ export default function VenueSelection() {
     const venueBudget = (price / capacity) * parseInt(people);
 
     // Calculate the total cost for the selected services
-    const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
+    // const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
 
     // Calculate the total budget
     // const updatedBudget = parseFloat(venueBudget) + servicesBudget;

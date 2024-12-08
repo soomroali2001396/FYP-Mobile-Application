@@ -13,9 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
 const events = [
-  { id: 1, title: 'Bharat & Nikkah', status: 'Pending', helpers: ['Alice'] },
-  { id: 2, title: 'Mehndi Function', status: 'Complete', helpers: ['Bob', 'Charlie'] },
-  { id: 3, title: 'Dholki', status: 'Pending', helpers: [] },
+  { id: 1, title: 'Bharat & Nikkah', status: 'Pending', helpers: ['Alice'], date: '12/6/2024 - 12/7/2024', budget: '1000000', estimatedBudget: '500000', eventServices: 'Venue, Decoration, Transportation' },
+  { id: 2, title: 'Mehndi Function', status: 'Complete', helpers: ['Bob', 'Charlie'], date: '12/6/2024 - 12/7/2024', budget: '1000000', estimatedBudget: '500000', eventServices: 'Venue, Decoration, Transportation' },
+  { id: 3, title: 'Dholki', status: 'Pending', helpers: [], date: '12/6/2024 - 12/7/2024', budget: '2000000', estimatedBudget: '500000', eventServices: 'Venue, Decoration, Transportation' },
 ];
 
 export default function DashboardScreen() {
@@ -35,14 +35,14 @@ export default function DashboardScreen() {
 
         {/* Event Summary */}
         <View style={styles.summaryContainer}>
-          <Text style={styles.summaryTitle}>Event Summary</Text>
+          <Text style={styles.summaryTitle}>Events Summary</Text>
           <View style={styles.summaryRow}>
             <SummaryItem
               title="Total Events"
               count={totalEvents}
               icon="calendar-outline"
               color="#6A4E36"
-              onPress={() => navigation.navigate('Eventprogress')}
+              
             />
             <SummaryItem
               title="In Progress"
@@ -68,11 +68,26 @@ export default function DashboardScreen() {
         {/* Ongoing Events */}
         <Text style={styles.sectionTitle}>Ongoing Events</Text>
         {ongoingEvents.map((event) => (
-          <View key={event.id} style={styles.eventCard}>
-            <Text style={styles.eventTitle}>{event.title}</Text>
-            <Text style={styles.eventStatus}>Status: {event.status}</Text>
-          </View>
-        ))}
+   <TouchableOpacity 
+   key={event.id} 
+   style={styles.eventCard} 
+   onPress={() => 
+     navigation.navigate('Eventprogress', { 
+       eventData: { 
+         eventName: event.title, 
+         eventDate: event.date, 
+         budget: event.budget, 
+         estimatedBudget: event.estimatedBudget, 
+         services: event.eventServices, 
+         eventhelper: event.helpers
+       } 
+     })
+   }
+ >
+    <Text style={styles.eventTitle}>{event.title}</Text>
+    <Text style={styles.eventStatus}>Status: {event.status}</Text>
+  </TouchableOpacity>
+))}
 
         {/* Helper Management */}
         <View style={styles.helperSection}>
@@ -228,12 +243,12 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   eventCard: {
-    backgroundColor: 'white',
+    backgroundColor: '#C8B29E',
     borderRadius: 8,
     padding: 16,
     marginHorizontal: 16,
     marginBottom: 8,
-    shadowColor: '#000',
+    shadowColor: '#C8B29E',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -246,7 +261,7 @@ const styles = StyleSheet.create({
   },
   eventStatus: {
     fontSize: 14,
-    color: '#666',
+    color: '#1f1f1f',
     marginTop: 4,
   },
   helperSection: {
