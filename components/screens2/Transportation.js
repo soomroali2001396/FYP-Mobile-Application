@@ -9,10 +9,11 @@ export default function TransportSelection() {
   const [selectedTransport, setSelectedTransport] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
-  const [budget, setBudget] = useState(1000); // Default budget
+  // const [budget, setBudget] = useState(1000); // Default budget
   const [people, setPeople] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
   const [translateY] = useState(new Animated.Value(0));
+  const [calculatedBudget, setCalculatedBudget] = useState(0);
 
   const navigation = useNavigation();
 
@@ -24,7 +25,7 @@ export default function TransportSelection() {
         const transformedData = data.map((item) => ({
           id: item.serviceId,
           name: item.serviceName,
-          description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price: ${item.servicePrice}`,
+          description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price/Head: ${item.servicePrice}`,
           type: item.serviceType,
           address: item.serviceArea,
           capacity: item.serviceCapacity,
@@ -53,12 +54,29 @@ export default function TransportSelection() {
   };
 
   const handlePlanSubmit = () => {
+    if (!people || isNaN(people) || parseInt(people) <= 0) {
+      alert('Please enter a valid number of people');
+      return;
+    }
+
+    // Calculate the budget for the venue
+    const price = selectedTransport.price;
+    const capacity = selectedTransport.capacity;
+
+    // Calculate the venue's budget based on number of people
+    const transportBudget = price  * parseInt(people);
+
+    // Calculate the total cost for the selected services
+    // const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
+
+    // Calculate the total budget
+    // const updatedBudget = parseFloat(venueBudget) + servicesBudget;
+    setCalculatedBudget(transportBudget);
+
+    // Pass the updated budget to Plan.js
     navigation.navigate('Plan', {
-      transport: selectedTransport,
-      budget,
-      people,
+      estimatedBudget: transportBudget,
     });
-    setAddModalVisible(false);
   };
 
   const toggleMaximize = () => {
@@ -92,7 +110,7 @@ export default function TransportSelection() {
             <Image source={{ uri: item.image }} style={styles.transportImage} />
             <View style={styles.details}>
               <Text style={styles.transportName}>{item.name}</Text>
-              <Text style={styles.transportDescription}>{item.description}</Text>
+              {/* <Text style={styles.transportDescription}>{item.description}</Text> */}
               <Text style={styles.transportCity}>City: {item.city}</Text>
               <Text style={styles.transportRating}>Rating: {item.rating}</Text>
               {/* View Details Button */}
@@ -170,7 +188,7 @@ export default function TransportSelection() {
                   onChangeText={setPeople}
                   keyboardType="numeric"
                 />
-                <Text style={styles.modalDescription}>Budget: {budget}</Text>
+                {/* <Text style={styles.modalDescription}>Budget: {budget}</Text> */}
                 <TouchableOpacity style={styles.button} onPress={handlePlanSubmit}>
                   <Text style={styles.buttonText}>Add to Plan</Text>
                 </TouchableOpacity>
@@ -186,7 +204,7 @@ export default function TransportSelection() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#F9F3EC',
     padding: 20,
   },
   title: {
@@ -198,7 +216,7 @@ const styles = StyleSheet.create({
   },
   transportCard: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: '#C8B29E',
     marginBottom: 20,
     borderRadius: 15,
     elevation: 6,
@@ -221,26 +239,30 @@ const styles = StyleSheet.create({
   },
   transportName: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#34495e',
+    fontWeight: '600',
+    color: '#1f1f1f',
   },
   transportDescription: {
-    color: '#7f8c8d',
+    fontSize: 14,
+    color: '#fff',
+    marginBottom: 8,
   },
   transportCity: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: '#fff',
   },
   transportRating: {
     fontSize: 14,
-    color: '#2ecc71',
+    color: '#00A5A8',
+    fontWeight: 'bold',
   },
   viewDetailButton: {
-    backgroundColor: '#3498db',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
+    backgroundColor: '#1f1f1f',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
     borderRadius: 25,
-    marginTop: 12,
+    marginTop: 10,
+    elevation: 3,
   },
   viewDetailText: {
     color: '#fff',
@@ -258,64 +280,102 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 5,
   },
+  commentContainer: {
+    marginTop: 10,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderColor: '#ccc',
+  },
+  commentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  commentUsername: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2980b9',
+  },
+  commentText: {
+    fontSize: 14,
+    marginTop: 5,
+    color: '#34495e',
+  },
+  commentPhotosContainer: {
+    flexDirection: 'row',
+    marginTop: 8,
+  },
+  commentPhoto: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+    marginRight: 5,
+  },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: '90%',
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 20,
-    elevation: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   maximizedOverlay: {
-    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  modalContent: {
+    width: 350,
+    padding: 20,
+    backgroundColor: '#F9F3EC',
+    borderRadius: 20,
+    alignItems: 'center',
+    maxHeight: '80%',
+    elevation: 5,
   },
   maximizedContent: {
-    width: '100%',
+    width: '90%',
+    height: '90%',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#34495e',
+    width: '100%',
+    marginBottom: 20,
   },
   modalActions: {
     flexDirection: 'row',
-    alignItems: 'center',
   },
   modalActionButton: {
     marginLeft: 10,
   },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#34495e',
+  },
   modalDescription: {
-    fontSize: 16,
-    color: '#7f8c8d',
-    marginTop: 10,
+    fontSize: 14,
+    color: '#2c3e50',
+    marginBottom: 20,
   },
   input: {
-    height: 40,
-    borderColor: '#bdc3c7',
+    height: 45,
+    width: '100%',
+    borderColor: '#BDC3C7',
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginTop: 10,
+    borderRadius: 15,
+    marginBottom: 20,
+    paddingLeft: 15,
+    backgroundColor: '#ecf0f1',
   },
   button: {
-    marginTop: 20,
-    backgroundColor: '#3498db',
-    padding: 15,
-    borderRadius: 8,
+    backgroundColor: '#1f1f1f',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    marginTop: 10,
+    elevation: 3,
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    textAlign: 'center',
+    fontWeight: '600',
   },
 });

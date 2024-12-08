@@ -1,6 +1,6 @@
 
 
-export const BASE_URL = 'http://192.168.29.34:8080/api';
+export const BASE_URL = 'http://192.168.1.7:8080/api';
 
 export const Signupusers = async (users) => {
   const response = await fetch(`${BASE_URL}/users`, {

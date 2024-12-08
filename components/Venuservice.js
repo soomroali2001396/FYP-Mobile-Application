@@ -145,7 +145,7 @@ export default function VenueSelection() {
             <Image source={{ uri: item.image }} style={styles.venueImage} />
             <View style={styles.details}>
               <Text style={styles.venueName}>{item.name}</Text>
-              <Text style={styles.venueDescription}>{item.description}</Text>
+              {/* <Text style={styles.venueDescription}>{item.description}</Text> */}
               <Text style={styles.venueCity}>City: {item.city}</Text>
               <Text style={styles.venueRating}>Rating: {item.rating}</Text>
               {/* View Details Button */}
@@ -295,12 +295,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   viewDetailButton: {
-    backgroundColor: '#1f1f1f',
-    paddingVertical: 15,
-    paddingHorizontal: 40,
+    backgroundColor: '#3498db',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
     borderRadius: 25,
-    marginTop: 10,
-    elevation: 3,
+    marginTop: 12,
   },
   viewDetailText: {
     color: '#fff',

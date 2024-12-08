@@ -13,6 +13,7 @@ export default function CateringSelection() {
   const [people, setPeople] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
   const [translateY] = useState(new Animated.Value(0));
+  const [calculatedBudget, setCalculatedBudget] = useState(0);
 
   const navigation = useNavigation();
 
@@ -53,12 +54,29 @@ export default function CateringSelection() {
   };
 
   const handlePlanSubmit = () => {
+    if (!people || isNaN(people) || parseInt(people) <= 0) {
+      alert('Please enter a valid number of people');
+      return;
+    }
+
+    // Calculate the budget for the venue
+    const price = selectedCatering.price;
+    const capacity = selectedCatering.capacity;
+
+    // Calculate the venue's budget based on number of people
+    const cateringBudget = (price / capacity) * parseInt(people);
+
+    // Calculate the total cost for the selected services
+    // const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
+
+    // Calculate the total budget
+    // const updatedBudget = parseFloat(venueBudget) + servicesBudget;
+    setCalculatedBudget(cateringBudget);
+
+    // Pass the updated budget to Plan.js
     navigation.navigate('Plan', {
-      catering: selectedCatering,
-      budget,
-      people,
+      estimatedBudget: cateringBudget,
     });
-    setAddModalVisible(false);
   };
 
   const toggleMaximize = () => {
@@ -92,21 +110,21 @@ export default function CateringSelection() {
             <Image source={{ uri: item.image }} style={styles.cateringImage} />
             <View style={styles.details}>
               <Text style={styles.cateringName}>{item.name}</Text>
-              <Text style={styles.cateringDescription}>{item.description}</Text>
+              {/* <Text style={styles.cateringDescription}>{item.description}</Text> */}
               <Text style={styles.cateringLocation}>Location: {item.city}</Text>
               <Text style={styles.cateringRating}>Rating: {item.rating}</Text>
               <TouchableOpacity
                 style={styles.viewDetailButton}
                 onPress={() => handleViewDetails(item)}
               >
-                <MaterialCommunityIcons name="eye" size={24} color="#fff" />
+                <Text style={styles.viewDetailText}>View Details</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => handleAddCatering(item)}
             >
-              <Text style={{ color: '#fff' }}>Add</Text>
+              <AntDesign name="plus" size={24} color="#fff" />
             </TouchableOpacity>
           </View>
         )}
@@ -164,6 +182,7 @@ export default function CateringSelection() {
                 </View>
               </View>
               <ScrollView>
+              <Text style={styles.modalDescription}>{selectedCatering.description}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Enter number of people"
@@ -171,15 +190,15 @@ export default function CateringSelection() {
                   onChangeText={(text) => setPeople(text)}
                   value={people}
                 />
-                <TextInput
+                {/* <TextInput
                   style={styles.input}
                   placeholder="Enter your budget"
                   keyboardType="numeric"
                   onChangeText={(text) => setBudget(text)}
                   value={budget.toString()}
-                />
+                /> */}
                 <TouchableOpacity style={styles.submitButton} onPress={handlePlanSubmit}>
-                  <Text style={styles.submitButtonText}>Submit Plan</Text>
+                  <Text style={styles.submitButtonText}>Add to Plan</Text>
                 </TouchableOpacity>
               </ScrollView>
             </View>
@@ -193,6 +212,7 @@ export default function CateringSelection() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F9F3EC',
     padding: 20,
   },
   title: {
@@ -208,55 +228,62 @@ const styles = StyleSheet.create({
   },
   cateringCard: {
     flexDirection: 'row',
-    marginBottom: 15,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    backgroundColor: '#C8B29E',
+    marginBottom: 20,
+    borderRadius: 15,
+    elevation: 6,
+    shadowColor: '#2c3e50',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    padding: 15,
+    position: 'relative',
   },
   cateringImage: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
+    borderRadius: 15,
   },
   details: {
-    padding: 10,
     flex: 1,
+    marginLeft: 15,
+    justifyContent: 'space-between',
   },
   cateringName: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#1f1f1f',
   },
   cateringDescription: {
     fontSize: 14,
-    marginVertical: 5,
+    color: '#fff',
+    marginBottom: 8,
   },
   cateringLocation: {
-    fontSize: 12,
-    color: '#7f8c8d',
+    fontSize: 14,
+    color: '#fff',
   },
   cateringRating: {
-    fontSize: 12,
-    color: '#f39c12',
+    fontSize: 14,
+    color: '#00A5A8',
+    fontWeight: 'bold',
   },
   viewDetailButton: {
-    backgroundColor: '#7f8c8d',
-    padding: 4,
-    borderRadius: 50,
-    marginLeft: 50,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#1f1f1f',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    marginTop: 10,
+    elevation: 3,
   },
   viewDetailText: {
     color: '#fff',
-    marginLeft: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   addButton: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 70,
     right: 20,
     backgroundColor: '#6A4E36',
     padding: 15,
@@ -266,75 +293,86 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   input: {
+    height: 45,
+    width: '100%',
+    borderColor: '#BDC3C7',
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
+    borderRadius: 15,
+    marginBottom: 20,
+    paddingLeft: 15,
+    backgroundColor: '#ecf0f1',
   },
   submitButton: {
-    backgroundColor: '#3498db',
-    padding: 15,
-    borderRadius: 5,
-    marginVertical: 10,
-    alignItems: 'center',
+    backgroundColor: '#1f1f1f',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    marginTop: 10,
+    elevation: 3,
   },
   submitButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
   },
   commentContainer: {
-    marginVertical: 10,
+    marginTop: 10,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderColor: '#ccc',
   },
   commentHeader: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   commentUsername: {
-    fontSize: 16,
     marginLeft: 10,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: '#2980b9',
   },
   commentText: {
     fontSize: 14,
-    marginVertical: 5,
+    marginTop: 5,
+    color: '#34495e',
   },
   commentPhotosContainer: {
     flexDirection: 'row',
-    marginTop: 10,
+    marginTop: 8,
   },
   commentPhoto: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 5,
     marginRight: 5,
   },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  maximizedOverlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
+  maximizedOverlay: {
+    justifyContent: 'flex-start',
+  },
   modalContent: {
-    width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    width: 350,
     padding: 20,
+    backgroundColor: '#F9F3EC',
+    borderRadius: 20,
+    alignItems: 'center',
+    maxHeight: '80%',
+    elevation: 5,
   },
   maximizedContent: {
     width: '90%',
+    height: '90%',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    width: '100%',
+    marginBottom: 20,
   },
   modalActions: {
     flexDirection: 'row',
@@ -342,9 +380,15 @@ const styles = StyleSheet.create({
   modalActionButton: {
     marginLeft: 10,
   },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#34495e',
+  },
   modalDescription: {
-    fontSize: 16,
-    marginVertical: 10,
+    fontSize: 14,
+    color: '#2c3e50',
+    marginBottom: 20,
   },
 });
 

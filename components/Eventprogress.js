@@ -305,19 +305,324 @@
 //     marginLeft: 10,
 //     fontWeight: 'bold',
 //   },
+// // });
+// import React, { useState, useEffect } from 'react';
+// import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
+// import { MaterialCommunityIcons } from '@expo/vector-icons'; // For edit icon
+
+// export default function EventprogressScreen({ route, navigation }) {
+//   const { eventData } = route.params;
+
+//   // State for editable fields and helpers
+//   const [showHelpers, setShowHelpers] = useState(false);
+//   const [updatedEventData, setUpdatedEventData] = useState({ ...eventData });
+//   const [editingField, setEditingField] = useState(null); // Track which field is being edited
+//   const helpers = updatedEventData?.helpers || [];
+
+//   const handleSave = () => {
+//     // Save the updated data
+//     console.log('Updated event data:', updatedEventData);
+//     Alert.alert('Data Saved', 'Event data has been updated successfully!');
+//   };
+
+//   const handleEdit = (field) => {
+//     setEditingField(field); // Set the field being edited
+//   };
+
+//   const handleChange = (field, value) => {
+//     setUpdatedEventData({ ...updatedEventData, [field]: value });
+//   };
+
+//   if (!eventData) {
+//     return (
+//       <View style={styles.container}>
+//         <Text style={styles.errorText}>No event data available</Text>
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       {/* Dashboard Icon - Top Left */}
+//       <TouchableOpacity style={styles.dashboardIcon} onPress={() => navigation.navigate('Dashboard')}>
+//         <MaterialCommunityIcons name="view-dashboard" size={30} color="#6A4E36" />
+//       </TouchableOpacity>
+
+//       <Text style={styles.title}>Event Progress</Text>
+
+//       {/* Editable Event Details */}
+//       <View style={styles.detailContainer}>
+//         <Text style={styles.label}>Event Name:</Text>
+//         {editingField === 'eventName' ? (
+//           <TextInput
+//             style={[styles.input, styles.editableField]}
+//             value={updatedEventData?.eventName}
+//             onChangeText={(text) => handleChange('eventName', text)}
+//             autoFocus
+//           />
+//         ) : (
+//           <TouchableOpacity onPress={() => handleEdit('eventName')}>
+//             <Text style={styles.value}>{updatedEventData?.eventName || 'N/A'}</Text>
+//             <MaterialCommunityIcons name="pencil" size={20} color="#1f1f1f" />
+//           </TouchableOpacity>
+//         )}
+//       </View>
+
+//       <View style={styles.detailContainer}>
+//         <Text style={styles.label}>Event Date:</Text>
+//         {editingField === 'eventDate' ? (
+//           <TextInput
+//             style={[styles.input, styles.editableField]}
+//             value={updatedEventData?.eventDate}
+//             onChangeText={(text) => handleChange('eventDate', text)}
+//             autoFocus
+//           />
+//         ) : (
+//           <TouchableOpacity onPress={() => handleEdit('eventDate')}>
+//             <Text style={styles.value}>{updatedEventData?.eventDate || 'N/A'}</Text>
+//             <MaterialCommunityIcons name="pencil" size={20} color="#1f1f1f" />
+//           </TouchableOpacity>
+//         )}
+//       </View>
+
+//       <View style={styles.detailContainer}>
+//         <Text style={styles.label}>Budget:</Text>
+//         {editingField === 'budget' ? (
+//           <TextInput
+//             style={[styles.input, styles.editableField]}
+//             value={updatedEventData?.budget}
+//             onChangeText={(text) => handleChange('budget', text)}
+//             autoFocus
+//           />
+//         ) : (
+//           <TouchableOpacity onPress={() => handleEdit('budget')}>
+//             <Text style={styles.value}>{updatedEventData?.budget || 'N/A'}</Text>
+//             <MaterialCommunityIcons name="pencil" size={20} color="#1f1f1f" />
+//           </TouchableOpacity>
+//         )}
+//       </View>
+
+//       <View style={styles.detailContainer}>
+//         <Text style={styles.label}>Estimated Budget:</Text>
+//         <Text style={styles.value}>{updatedEventData?.estimatedBudget || 'N/A'}</Text>
+//       </View>
+
+//       <View style={styles.detailContainer}>
+//         <Text style={styles.label}>Services:</Text>
+//         <Text style={styles.value}>{updatedEventData?.services || 'N/A'}</Text>
+//       </View>
+
+//       {/* Progress Bar Section */}
+//       <View style={styles.progressContainer}>
+//         <Text style={styles.label}>Progress:</Text>
+//         <View style={styles.progressBar}>
+//           <View
+//             style={[
+//               styles.progressFill,
+//               { width: `${updatedEventData?.progressPercentage || 50}%` },
+//             ]}
+//           />
+//         </View>
+//         <Text style={styles.progressPercentage}>{updatedEventData?.progressPercentage || 50}%</Text>
+//       </View>
+
+//       {/* View Helpers Section */}
+//       <TouchableOpacity
+//         style={styles.viewHelpersButton}
+//         onPress={() => setShowHelpers(!showHelpers)}
+//       >
+//         <Text style={styles.viewHelpersText}>
+//           {showHelpers ? 'Hide Helpers' : 'View Helpers'}
+//         </Text>
+//       </TouchableOpacity>
+
+//       {showHelpers && (
+//         helpers.length > 0 ? (
+//           <FlatList
+//             data={helpers}
+//             keyExtractor={(item, index) => `helper-${index}`}
+//             renderItem={({ item }) => (
+//               <View style={styles.helperItem}>
+//                 <Text style={styles.helperName}>{item}</Text>
+//               </View>
+//             )}
+//             style={styles.helperList}
+//           />
+//         ) : (
+//           <Text style={styles.errorText}>No helpers available</Text>
+//         )
+//       )}
+
+//       {/* Save Button */}
+//       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+//         <Text style={styles.saveText}>Save Changes</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#F9F3EC',
+//     padding: 20,
+//   },
+//   title: {
+//     fontSize: 26,
+//     fontWeight: 'bold',
+//     marginBottom: 16,
+//     color: '#6A4E36',
+//     textAlign: 'center',
+//   },
+//   dashboardIcon: {
+//     position: 'absolute',
+//     top: 20,
+//     left: 20,
+//     zIndex: 10,
+//   },
+//   detailContainer: {
+//     width: '100%',
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     backgroundColor: '#D1A100',
+//     padding: 16,
+//     borderRadius: 10,
+//     marginBottom: 12,
+//     elevation: 5,
+//     shadowColor: '#fff',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.3,
+//     shadowRadius: 4,
+//   },
+//   label: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     color: '#1f1f1f',
+//   },
+//   value: {
+//     fontSize: 16,
+//     fontWeight: 'normal',
+//     color: '#1f1f1f',
+//   },
+//   input: {
+//     width: '60%',
+//     fontSize: 16,
+//     borderColor: '#1f1f1f',
+//     borderWidth: 1,
+//     padding: 8,
+//     borderRadius: 5,
+//     color: '#1f1f1f',
+//   },
+//   editableField: {
+//     borderColor: '#1f1f1f',
+//     borderWidth: 2,
+//     backgroundColor: '#f1f8e9',
+//   },
+//   progressContainer: {
+//     marginVertical: 16,
+//     alignItems: 'center',
+//   },
+//   progressBar: {
+//     width: '100%',
+//     height: 20,
+//     backgroundColor: '#e0e0e0',
+//     borderRadius: 10,
+//     overflow: 'hidden',
+//     marginBottom: 8,
+//   },
+//   progressFill: {
+//     height: '100%',
+//     backgroundColor: '#C8B29E',
+//     borderRadius: 10,
+//   },
+//   progressPercentage: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     color: '#6A4E36',
+//   },
+//   viewHelpersButton: {
+//     backgroundColor: '#6A4E36',
+//     paddingVertical: 15,
+//     paddingHorizontal: 40,
+//     borderRadius: 25,
+//     marginTop: 10,
+//     elevation: 3,
+//   },
+//   viewHelpersText: {
+//     color: '#FFF',
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//   },
+//   helperList: {
+//     marginTop: 8,
+//   },
+//   helperItem: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     backgroundColor: '#FFF',
+//     padding: 12,
+//     borderRadius: 8,
+//     marginBottom: 8,
+//     elevation: 3,
+//   },
+//   helperName: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//     color: '#333',
+//   },
+//   saveButton: {
+//     backgroundColor: '#1f1f1f',
+//     paddingVertical: 15,
+//     paddingHorizontal: 40,
+//     borderRadius: 25,
+//     marginTop: 10,
+//     elevation: 3,
+    
+    
+//   },
+//   saveText: {
+//     color: '#FFF',
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//   },
+//   errorText: {
+//     fontSize: 18,
+//     color: 'red',
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//   },
 // });
+
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; // For edit icon
+import moment from 'moment'; // For date formatting
 
 export default function EventprogressScreen({ route, navigation }) {
-  const { eventData } = route.params;
+  const { eventData, eventDate } = route.params; // Get eventDate from route.params
 
   // State for editable fields and helpers
   const [showHelpers, setShowHelpers] = useState(false);
   const [updatedEventData, setUpdatedEventData] = useState({ ...eventData });
   const [editingField, setEditingField] = useState(null); // Track which field is being edited
   const helpers = updatedEventData?.helpers || [];
+
+  // State to manage editable date fields
+  const [startDate, setStartDate] = useState(eventDate?.from || ''); 
+  const [endDate, setEndDate] = useState(eventDate?.to || '');
+
+  // Function to calculate duration in days
+  const calculateDuration = (start, end) => {
+    if (start && end) {
+      const startMoment = moment(start);
+      const endMoment = moment(end);
+      if (startMoment.isValid() && endMoment.isValid()) {
+        return endMoment.diff(startMoment, 'days'); // Calculate difference in days
+      }
+    }
+    return null; // Return null if dates are invalid
+  };
 
   const handleSave = () => {
     // Save the updated data
@@ -340,6 +645,8 @@ export default function EventprogressScreen({ route, navigation }) {
       </View>
     );
   }
+
+  const duration = calculateDuration(startDate, endDate); // Calculate event duration
 
   return (
     <View style={styles.container}>
@@ -368,23 +675,28 @@ export default function EventprogressScreen({ route, navigation }) {
         )}
       </View>
 
+      {/* Duration (Start and End Date converted to Days) */}
       <View style={styles.detailContainer}>
-        <Text style={styles.label}>Event Date:</Text>
-        {editingField === 'eventDate' ? (
+        <Text style={styles.label}>Event Duration:</Text>
+        {editingField === 'eventDuration' ? (
           <TextInput
             style={[styles.input, styles.editableField]}
-            value={updatedEventData?.eventDate}
-            onChangeText={(text) => handleChange('eventDate', text)}
+            value={duration !== null ? duration.toString() : ''}
+            onChangeText={(text) => handleChange('eventDuration', text)}
             autoFocus
+            keyboardType="numeric"
           />
         ) : (
-          <TouchableOpacity onPress={() => handleEdit('eventDate')}>
-            <Text style={styles.value}>{updatedEventData?.eventDate || 'N/A'}</Text>
+          <TouchableOpacity onPress={() => handleEdit('eventDuration')}>
+            <Text style={styles.value}>
+              {duration !== null ? `${duration} days` : 'N/A'}
+            </Text>
             <MaterialCommunityIcons name="pencil" size={20} color="#1f1f1f" />
           </TouchableOpacity>
         )}
       </View>
 
+      {/* Budget */}
       <View style={styles.detailContainer}>
         <Text style={styles.label}>Budget:</Text>
         {editingField === 'budget' ? (
@@ -577,8 +889,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginTop: 10,
     elevation: 3,
-    
-    
   },
   saveText: {
     color: '#FFF',
