@@ -1,5 +1,179 @@
 
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   ScrollView,
+//   TouchableOpacity,
+//   Modal,
+// } from 'react-native';
+// import { Ionicons } from '@expo/vector-icons';
+// import { SafeAreaView } from 'react-native-safe-area-context';
+// import { useNavigation } from '@react-navigation/native';
+
+// const events = [
+//   { id: 1, title: 'Bharat & Nikkah', status: 'Pending', helpers: ['Alice'], date: '12/6/2024 - 12/7/2024', budget: '1000000', estimatedBudget: '500000', eventServices: 'Venue, Decoration, Transportation' },
+//   { id: 2, title: 'Mehndi Function', status: 'Complete', helpers: ['Bob', 'Charlie'], date: '12/6/2024 - 12/7/2024', budget: '1000000', estimatedBudget: '500000', eventServices: 'Venue, Decoration, Transportation' },
+//   { id: 3, title: 'Dholki', status: 'Pending', helpers: [], date: '12/6/2024 - 12/7/2024', budget: '2000000', estimatedBudget: '500000', eventServices: 'Venue, Decoration, Transportation' },
+// ];
+
+// export default function DashboardScreen() {
+//   const navigation = useNavigation();
+//   const userName = 'Ali';
+//   const totalEvents = events.length;
+//   const eventsInProgress = events.filter((event) => event.status === 'Pending').length;
+//   const completedEvents = events.filter((event) => event.status === 'Complete').length;
+//   const [isHelperModalVisible, setHelperModalVisible] = useState(false);
+//   const ongoingEvents = events.filter((event) => event.status === 'Pending');
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <ScrollView contentContainerStyle={styles.scrollContainer}>
+//         {/* Welcome Message */}
+//         <Text style={styles.welcomeMessage}>Welcome, {userName}!</Text>
+
+//         {/* Event Summary */}
+//         <View style={styles.summaryContainer}>
+//           <Text style={styles.summaryTitle}>Events Summary</Text>
+//           <View style={styles.summaryRow}>
+//             <SummaryItem
+//               title="Total Events"
+//               count={totalEvents}
+//               icon="calendar-outline"
+//               color="#6A4E36"
+              
+//             />
+//             <SummaryItem
+//               title="In Progress"
+//               count={eventsInProgress}
+//               icon="hourglass-outline"
+//               color="#FFA500"
+//             />
+//             <SummaryItem
+//               title="Completed"
+//               count={completedEvents}
+//               icon="checkmark-circle-outline"
+//               color="#28A745"
+//             />
+//           </View>
+//         </View>
+
+//         {/* Create New Event Button */}
+//         <TouchableOpacity style={styles.createEventButton} onPress={() => navigation.navigate('Plan')}>
+//           <Ionicons name="add-circle-outline" size={24} color="white" />
+//           <Text style={styles.createEventButtonText}>Create New Event</Text>
+//         </TouchableOpacity>
+
+//         {/* Ongoing Events */}
+//         <Text style={styles.sectionTitle}>Ongoing Events</Text>
+//         {ongoingEvents.map((event) => (
+//    <TouchableOpacity 
+//    key={event.id} 
+//    style={styles.eventCard} 
+//    onPress={() => 
+//      navigation.navigate('Eventprogress', { 
+//        eventData: { 
+//          eventName: event.title, 
+//          eventDate: event.date, 
+//          budget: event.budget, 
+//          estimatedBudget: event.estimatedBudget, 
+//          services: event.eventServices, 
+//          eventhelper: event.helpers
+//        } 
+//      })
+//    }
+//  >
+//     <Text style={styles.eventTitle}>{event.title}</Text>
+//     <Text style={styles.eventStatus}>Status: {event.status}</Text>
+//   </TouchableOpacity>
+// ))}
+
+//         {/* Helper Management */}
+//         <View style={styles.helperSection}>
+//           <Text style={styles.sectionTitle}>Helper Management</Text>
+//           <Text style={styles.helperSummary}>
+//             {events.reduce((total, event) => total + event.helpers.length, 0)} helpers involved in events
+//           </Text>
+//           <TouchableOpacity
+//             style={styles.manageHelpersButton}
+//             onPress={() => setHelperModalVisible(true)}
+//           >
+//             <Text style={styles.manageHelpersButtonText}>Manage Helpers</Text>
+//           </TouchableOpacity>
+//         </View>
+
+//         {/* Helper Modal */}
+//         <Modal
+//           animationType="slide"
+//           transparent={true}
+//           visible={isHelperModalVisible}
+//           onRequestClose={() => setHelperModalVisible(false)}
+//         >
+//           <View style={styles.modalContainer}>
+//             <View style={styles.modalContent}>
+//               <Text style={styles.modalTitle}>Helper Management</Text>
+//               <TouchableOpacity
+//                 style={styles.modalButton}
+//                 onPress={() => {
+//                   setHelperModalVisible(false);
+//                   navigation.navigate('Helperform', { ongoingEvents });
+//                 }}
+//               >
+//                 <Text style={styles.modalButtonText}>Add New Helper</Text>
+//               </TouchableOpacity>
+//               <TouchableOpacity
+//                 style={styles.modalButton}
+//                 onPress={() => {
+//                   setHelperModalVisible(false);
+//                   navigation.navigate('Existinghelper', { ongoingEvents });
+//                 }}
+//               >
+//                 <Text style={styles.modalButtonText}>Adjust Existing Helper</Text>
+//               </TouchableOpacity>
+//               <TouchableOpacity
+//                 style={styles.modalCloseButton}
+//                 onPress={() => setHelperModalVisible(false)}
+//               >
+//                 <Text style={styles.modalCloseButtonText}>Close</Text>
+//               </TouchableOpacity>
+//             </View>
+//           </View>
+//         </Modal>
+
+//         {/* Quick Links */}
+//         <View style={styles.quickLinksContainer}>
+//           <QuickLinkButton
+//             title="Settings"
+//             icon="settings-outline"
+//             onPress={() => navigation.navigate('Profile')}
+//           />
+//         </View>
+//       </ScrollView>
+//     </SafeAreaView>
+//   );
+// }
+
+// function SummaryItem({ title, count, icon, color, onPress }) {
+//   return (
+//     <TouchableOpacity style={styles.summaryItem} onPress={onPress}>
+//       <Ionicons name={icon} size={24} color={color} />
+//       <Text style={[styles.summaryItemCount, { color }]}>{count}</Text>
+//       <Text style={styles.summaryItemTitle}>{title}</Text>
+//     </TouchableOpacity>
+//   );
+// }
+
+// function QuickLinkButton({ title, icon, onPress }) {
+//   return (
+//     <TouchableOpacity style={styles.quickLinkButton} onPress={onPress}>
+//       <Ionicons name={icon} size={24} color="#6A4E36" />
+//       <Text style={styles.quickLinkButtonText}>{title}</Text>
+//     </TouchableOpacity>
+//   );
+// }
+
+import React, { useState,useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,6 +185,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { getUserSession } from '../ServiceAPIs/UserSession'; 
 
 const events = [
   { id: 1, title: 'Bharat & Nikkah', status: 'Pending', helpers: ['Alice'], date: '12/6/2024 - 12/7/2024', budget: '1000000', estimatedBudget: '500000', eventServices: 'Venue, Decoration, Transportation' },
@@ -19,8 +194,27 @@ const events = [
 ];
 
 export default function DashboardScreen() {
+
+  const [userName, setUserName] = useState('');
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      try {
+        const session = await getUserSession(); // Use session utility function
+        if (session) {
+          setUserName(session.userName); // Set the userName from session
+        } else {
+          // Handle session expiration (optional: navigate to login)
+          console.warn('Session expired or not found.');
+        }
+      } catch (error) {
+        console.error('Error retrieving user session:', error.message);
+      }
+    };
+
+    fetchUserSession(); // Call the fetch function
+  }, []);
   const navigation = useNavigation();
-  const userName = 'Ali';
+  // const userName = 'Ali';
   const totalEvents = events.length;
   const eventsInProgress = events.filter((event) => event.status === 'Pending').length;
   const completedEvents = events.filter((event) => event.status === 'Complete').length;
@@ -31,7 +225,7 @@ export default function DashboardScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Welcome Message */}
-        <Text style={styles.welcomeMessage}>Welcome, {userName}!</Text>
+        <Text style={styles.welcomeMessage}>Welcome, {userName || 'Guest'}</Text>
 
         {/* Event Summary */}
         <View style={styles.summaryContainer}>
@@ -261,7 +455,7 @@ const styles = StyleSheet.create({
   },
   eventStatus: {
     fontSize: 14,
-    color: '#1f1f1f',
+    color: '#fff',
     marginTop: 4,
   },
   helperSection: {

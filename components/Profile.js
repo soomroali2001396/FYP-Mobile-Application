@@ -1,73 +1,33 @@
-// import React from 'react';
-// import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-
-// const Profile = ({ navigation }) => {
-//   // Default values
-//   const defaultImage = require('../Images/default-icon.png'); // Ensure the path is correct
-//   const defaultFirstName = 'Zain';
-//   const defaultLastName = 'Mirza';
-//   const defaultPassword = '********'; // Hidden by default
-
-//   const handleLogout = () => {
-//     // Navigate back to the main screen
-//     navigation.navigate('Login');
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-//         <Text style={styles.logoutText}>Logout</Text>
-//       </TouchableOpacity>
-//       <Image source={defaultImage} style={styles.image} />
-//       <Text style={styles.input}>{defaultFirstName}</Text>
-//       <Text style={styles.input}>{defaultLastName}</Text>
-//       <Text style={styles.input}>{defaultPassword}</Text>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//   },
-//   input: {
-//     height: 40,
-//     borderColor: 'gray',
-//     borderWidth: 1,
-//     marginBottom: 10,
-//     width: '80%',
-//     paddingHorizontal: 10,
-//   },
-//   image: {
-//     width: 200,
-//     height: 200,
-//     borderRadius: 100,
-//     marginTop: 20,
-//   },
-//   logoutButton: {
-//     backgroundColor: 'red',
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     borderRadius: 5,
-//     marginBottom: 20,
-//   },
-//   logoutText: {
-//     color: 'white',
-//     fontWeight: 'bold',
-//   },
-// });
-
-// export default Profile;
-
-import React, { useState }  from 'react';
+import React, { useState,useEffect }  from 'react';
 
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { getUserSession } from '../ServiceAPIs/UserSession'; 
+import { GetProfileData } from '../ServiceAPIs/UsersAPIs'; 
 
 export default function ProfileScreen() {
+  const [userId,setUserId] = useState('');
+  const [userData, setUserData] = useState(null);
+    // Fetch session data on component mount
+    useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const session = await getUserSession();
+          if (session) {
+            setUserId(session.userId); // Set userId from session
+            const data = await GetProfileData(session.userId); // Fetch user data by ID
+            setUserData(data); // Store the fetched user data
+          } else {
+            console.warn('Session expired or not found.');
+          }
+        } catch (error) {
+          console.error('Error retrieving user data:', error.message);
+        }
+      };
+  
+      fetchUserData(); // Call the fetch function
+    }, []);
+
   const [isModalVisible, setModalVisible] = useState(false);
 
   // Function to handle showing and hiding the modal
@@ -79,8 +39,7 @@ export default function ProfileScreen() {
       {/* Header with Back Button */}
       
 
-      {/* Profile Label
-       <Text style={styles.profileText}>Profile</Text> */}
+       <Text style={styles.profileText}>Profile {userId}</Text>
 
       {/* Profile Image */}
       <View style={styles.profileImageContainer}>
@@ -134,17 +93,22 @@ export default function ProfileScreen() {
 
             {/* Modal Content */}
             <View style={styles.modalContent}>
-              <Text style={styles.detailLabel}>Full Name</Text>
-              <Text style={styles.detailValue}>Ali </Text>
+            <Text style={styles.detailLabel}>Full Name</Text>
+        <Text style={styles.detailValue}>{userData?.userName || 'N/A'}</Text>
 
-              <Text style={styles.detailLabel}>Login Name</Text>
-              <Text style={styles.detailValue}>soomroali396</Text>
+        <Text style={styles.detailLabel}>Email Address</Text>
+        <Text style={styles.detailValue}>{userData?.userEmail || 'N/A'}</Text>
 
-              <Text style={styles.detailLabel}>Mobile Number</Text>
-              <Text style={styles.detailValue}>●●●●●●●4819</Text>
+        <Text style={styles.detailLabel}>Mobile Number</Text>
+        <Text style={styles.detailValue}>{userData?.userPhone || 'N/A'}</Text>
 
-              <Text style={styles.detailLabel}>Email Address</Text>
-              <Text style={styles.detailValue}>s●●●●●●●@g●●●●●.com</Text>
+        <Text style={styles.detailLabel}>Location</Text>
+        <Text style={styles.detailValue}>{userData?.userLocation || 'N/A'}</Text>
+
+        <Text style={styles.detailLabel}>Date of Birth</Text>
+        <Text style={styles.detailValue}>
+          {userData?.userDateOfBirth || 'N/A'}
+        </Text>
             </View>
           </View>
         </View>
