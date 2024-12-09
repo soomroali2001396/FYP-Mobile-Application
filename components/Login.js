@@ -11,11 +11,11 @@ const Login = ({ navigation }) => {
   const buttonScale = new Animated.Value(1);
 
   const handleLogin = async () => {
-    navigation.navigate('Main'); // only for development 
-    // if (!email || !password) {
-    //   alert('Please enter both email and password.');
-    //   return;
-    // }
+    // navigation.navigate('Main'); // only for development 
+    if (!email || !password) {
+      alert('Please enter both email and password.');
+      return;
+    }
   
     try {
       const response = await loginUsers(email, password);

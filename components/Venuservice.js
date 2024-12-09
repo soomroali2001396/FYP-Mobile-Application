@@ -1,31 +1,498 @@
-import React, { useState, useEffect  } from 'react';
-import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import {ServiceVenue,BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import the API function
+// import React, { useState, useEffect  } from 'react';
+// import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
+// import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+// import { useNavigation } from '@react-navigation/native';
+// import {ServiceVenue,BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import the API function
 
+
+// export default function VenueSelection() {
+//   const [venues, setVenues] = useState([]); // State for fetched data
+//   const [selectedVenue, setSelectedVenue] = useState(null);
+//   const [addModalVisible, setAddModalVisible] = useState(false);
+//   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
+//   const [budget, setBudget] = useState(1000); // Default budget
+//   const [people, setPeople] = useState('');
+//   const [isMaximized, setIsMaximized] = useState(false);
+//   const [translateY] = useState(new Animated.Value(0));
+//   const [calculatedBudget, setCalculatedBudget] = useState(0);
+
+
+//   const navigation = useNavigation();
+
+//   // for fetch data 
+//   useEffect(() => {
+//     // Fetch data from the API when the component loads
+//     const fetchVenues = async () => {
+//       try {
+//         const data = await ServiceVenue();
+//         // Transform data into the required structure if needed
+//         const transformedData = data.map((item) => ({
+//           id: item.serviceId,
+//           name: item.serviceName,
+//           description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price: ${item.servicePrice}`,
+//           type: item.serviceType,
+//           address: item.serviceArea,
+//           capacity: item.serviceCapacity,
+//           price: item.servicePrice,
+//           city: item.serviceCity,
+//           rating: 4.5, // Hardcoded rating if not provided by API
+//           image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`, // Use the image URL from API
+//         }));
+//         setVenues(transformedData);
+//       } catch (error) {
+//         console.error('Error fetching venues:', error.message);
+//       }
+//     };
+
+//     fetchVenues();
+//   }, []);
+
+
+
+//   const handleAddVenue = (venue) => {
+//     setSelectedVenue(venue);
+//     setAddModalVisible(true);
+//   };
+
+//   const handleViewDetails = (venue) => {
+//     setSelectedVenue(venue);
+//     setViewDetailsModalVisible(true);
+//   };
+
+//   // const handlePlanSubmit = () => {
+//   //   navigation.navigate('Plan', {
+//   //     venue: selectedVenue,
+//   //     budget,
+//   //     people,
+//   //   });
+//   //   setAddModalVisible(false);
+//   // };
+//   const handlePlanSubmit = () => {
+//     if (!people || isNaN(people) || parseInt(people) <= 0) {
+//       alert('Please enter a valid number of people');
+//       return;
+//     }
+
+//     // Calculate the budget for the venue
+//     const price = selectedVenue.price;
+//     const capacity = selectedVenue.capacity;
+
+//     // Calculate the venue's budget based on number of people
+//     const venueBudget = (price / capacity) * parseInt(people);
+
+//     // Calculate the total cost for the selected services
+//     // const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
+
+//     // Calculate the total budget
+//     // const updatedBudget = parseFloat(venueBudget) + servicesBudget;
+//     setCalculatedBudget(venueBudget);
+
+//     // Pass the updated budget to Plan.js
+//     navigation.navigate('Plan', {
+//       estimatedBudget: venueBudget,
+//     });
+//   };
+  
+
+//   const toggleMaximize = () => {
+//     setIsMaximized(!isMaximized);
+//     Animated.timing(translateY, {
+//       toValue: isMaximized ? 0 : -50, // Animation for maximize/minimize
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start();
+//   };
+
+//   const minimizeModal = () => {
+//     Animated.timing(translateY, {
+//       toValue: 600, // Move modal down
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start(() => {
+//       setAddModalVisible(false);
+//       setViewDetailsModalVisible(false);
+//     });
+//   };
+
+//   const renderComments = (comments) => {
+//     return comments.map((comment) => (
+//       <View key={comment.id} style={styles.commentContainer}>
+//         <View style={styles.commentHeader}>
+//           <MaterialCommunityIcons name="account-circle" size={36} color="#3498db" />
+//           <Text style={styles.commentUsername}>{comment.username}</Text>
+//         </View>
+//         <Text style={styles.commentText}>{comment.text}</Text>
+//         {comment.photos.length > 0 && (
+//           <View style={styles.commentPhotosContainer}>
+//             {comment.photos.map((photo, index) => (
+//               <Image key={index} source={{ uri: photo }} style={styles.commentPhoto} />
+//             ))}
+//           </View>
+//         )}
+//       </View>
+//     ));
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Select a Venue</Text>
+
+//       <FlatList
+//         data={venues} // Use the fetched data
+//         keyExtractor={(item) => item.id.toString()}
+//         renderItem={({ item }) => (
+//           <View style={styles.venueCard}>
+//             <Image source={{ uri: item.image }} style={styles.venueImage} />
+//             <View style={styles.details}>
+//               <Text style={styles.venueName}>{item.name}</Text>
+//               {/* <Text style={styles.venueDescription}>{item.description}</Text> */}
+//               <Text style={styles.venueCity}>City: {item.city}</Text>
+//               <Text style={styles.venueRating}>Rating: {item.rating}</Text>
+//               {/* View Details Button */}
+//               <TouchableOpacity
+//                 style={styles.viewDetailButton}
+//                 onPress={() => handleViewDetails(item)}
+//               >
+//                 <Text style={styles.viewDetailText}>View Details</Text>
+//               </TouchableOpacity>
+//             </View>
+//             {/* Add Button */}
+//             <TouchableOpacity
+//               style={styles.addButton}
+//               onPress={() => handleAddVenue(item)}
+//             >
+//               <AntDesign name="plus" size={24} color="#fff" />
+//             </TouchableOpacity>
+//           </View>
+//         )}
+//       />
+
+//       {/* View Details Modal */}
+//       {selectedVenue && (
+//         <Modal visible={viewDetailsModalVisible} animationType="none" transparent onRequestClose={() => setViewDetailsModalVisible(false)}>
+//           <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
+//             <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
+//               <View style={styles.modalHeader}>
+//                 <Text style={styles.modalTitle}>Venue Details</Text>
+//                 <View style={styles.modalActions}>
+//                   <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
+//                     <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={toggleMaximize} style={styles.modalActionButton}>
+//                     <AntDesign name={isMaximized ? 'shrink' : 'arrowsalt'} size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={() => setViewDetailsModalVisible(false)} style={styles.modalActionButton}>
+//                     <AntDesign name="closecircle" size={24} color="#e74c3c" />
+//                   </TouchableOpacity>
+//                 </View>
+//               </View>
+//               <ScrollView>
+//                 <Text style={styles.modalDescription}>{selectedVenue.description}</Text>
+//                 <Text style={styles.modalDescription}>City: {selectedVenue.city}</Text>
+//                 <Text style={styles.modalDescription}>Rating: {selectedVenue.rating}</Text>
+//                 <View style={styles.commentContainer}>
+//                   {/* {renderComments(selectedVenue.comments)} */}
+//                 </View>
+//               </ScrollView>
+//             </View>
+//           </Animated.View>
+//         </Modal>
+//       )}
+
+//       {/* Add Venue Modal */}
+//       {selectedVenue && (
+//         <Modal visible={addModalVisible} animationType="none" transparent onRequestClose={() => setAddModalVisible(false)}>
+//           <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
+//             <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
+//               <View style={styles.modalHeader}>
+//                 <Text style={styles.modalTitle}>Enter Events Details</Text>
+//                 <View style={styles.modalActions}>
+//                   <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
+//                     <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={toggleMaximize} style={styles.modalActionButton}>
+//                     <AntDesign name={isMaximized ? 'shrink' : 'arrowsalt'} size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={() => setAddModalVisible(false)} style={styles.modalActionButton}>
+//                     <AntDesign name="closecircle" size={24} color="#e74c3c" />
+//                   </TouchableOpacity>
+//                 </View>
+//               </View>
+//               <ScrollView>
+//                 <Text style={styles.modalDescription}>{selectedVenue.description}</Text>
+//                 <TextInput
+//                   style={styles.input}
+//                   placeholder="Enter number of people"
+//                   value={people}
+//                   onChangeText={setPeople}
+//                   keyboardType="numeric"
+//                 />
+//                 <TouchableOpacity style={styles.button} onPress={handlePlanSubmit}>
+//                   <Text style={styles.buttonText}>Add to Plan</Text>
+//                 </TouchableOpacity>
+//               </ScrollView>
+//             </View>
+//           </Animated.View>
+//         </Modal>
+//       )}
+//     </View>
+//   );
+// }
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
+// import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+// import DateTimePicker from '@react-native-community/datetimepicker'; // for date and time picker
+// import { useNavigation } from '@react-navigation/native';
+// import { ServiceVenue, BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import the API function
+
+// export default function VenueSelection() {
+//   const [venues, setVenues] = useState([]); // State for fetched data
+//   const [selectedVenue, setSelectedVenue] = useState(null);
+//   const [addModalVisible, setAddModalVisible] = useState(false);
+//   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
+//   const [budget, setBudget] = useState(1000); // Default budget
+//   const [people, setPeople] = useState('');
+//   const [isMaximized, setIsMaximized] = useState(false);
+//   const [translateY] = useState(new Animated.Value(0));
+//   const [calculatedBudget, setCalculatedBudget] = useState(0);
+  
+//   // Date and Time State
+//   const [date, setDate] = useState(new Date());
+//   const [time, setTime] = useState(new Date());
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [showTimePicker, setShowTimePicker] = useState(false);
+
+//   const navigation = useNavigation();
+
+//   // Fetch data from the API when the component loads
+//   useEffect(() => {
+//     const fetchVenues = async () => {
+//       try {
+//         const data = await ServiceVenue();
+//         const transformedData = data.map((item) => ({
+//           id: item.serviceId,
+//           name: item.serviceName,
+//           description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price: ${item.servicePrice}`,
+//           type: item.serviceType,
+//           address: item.serviceArea,
+//           capacity: item.serviceCapacity,
+//           price: item.servicePrice,
+//           city: item.serviceCity,
+//           rating: 4.5, // Hardcoded rating if not provided by API
+//           image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`,
+//         }));
+//         setVenues(transformedData);
+//       } catch (error) {
+//         console.error('Error fetching venues:', error.message);
+//       }
+//     };
+
+//     fetchVenues();
+//   }, []);
+
+//   const handleAddVenue = (venue) => {
+//     setSelectedVenue(venue);
+//     setAddModalVisible(true);
+//   };
+
+//   const handleViewDetails = (venue) => {
+//     setSelectedVenue(venue);
+//     setViewDetailsModalVisible(true);
+//   };
+
+//   const handlePlanSubmit = () => {
+//     if (!people || isNaN(people) || parseInt(people) <= 0) {
+//       alert('Please enter a valid number of people');
+//       return;
+//     }
+
+//     const price = selectedVenue.price;
+//     const capacity = selectedVenue.capacity;
+
+//     const venueBudget = (price / capacity) * parseInt(people);
+//     setCalculatedBudget(venueBudget);
+
+//     navigation.navigate('Plan', {
+//       estimatedBudget: venueBudget,
+//       date: date,
+//       time: time,
+//       people: people,
+//       venue: selectedVenue,
+//     });
+//   };
+
+//   const toggleMaximize = () => {
+//     setIsMaximized(!isMaximized);
+//     Animated.timing(translateY, {
+//       toValue: isMaximized ? 0 : -50,
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start();
+//   };
+
+//   const minimizeModal = () => {
+//     Animated.timing(translateY, {
+//       toValue: 600,
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start(() => {
+//       setAddModalVisible(false);
+//       setViewDetailsModalVisible(false);
+//     });
+//   };
+
+//   const onDateChange = (event, selectedDate) => {
+//     setShowDatePicker(false);
+//     setDate(selectedDate || date);
+//   };
+
+//   const onTimeChange = (event, selectedTime) => {
+//     setShowTimePicker(false);
+//     setTime(selectedTime || time);
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Select a Venue</Text>
+
+//       <FlatList
+//         data={venues}
+//         keyExtractor={(item) => item.id.toString()}
+//         renderItem={({ item }) => (
+//           <View style={styles.venueCard}>
+//             <Image source={{ uri: item.image }} style={styles.venueImage} />
+//             <View style={styles.details}>
+//               <Text style={styles.venueName}>{item.name}</Text>
+//               <Text style={styles.venueCity}>City: {item.city}</Text>
+//               <Text style={styles.venueRating}>Rating: {item.rating}</Text>
+//               <TouchableOpacity
+//                 style={styles.viewDetailButton}
+//                 onPress={() => handleViewDetails(item)}
+//               >
+//                 <Text style={styles.viewDetailText}>View Details</Text>
+//               </TouchableOpacity>
+//             </View>
+//             <TouchableOpacity
+//               style={styles.addButton}
+//               onPress={() => handleAddVenue(item)}
+//             >
+//               <AntDesign name="plus" size={24} color="#fff" />
+//             </TouchableOpacity>
+//           </View>
+//         )}
+//       />
+
+//       {/* Add Venue Modal */}
+//       {selectedVenue && (
+//         <Modal visible={addModalVisible} animationType="none" transparent onRequestClose={() => setAddModalVisible(false)}>
+//           <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
+//             <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
+//               <View style={styles.modalHeader}>
+//                 <Text style={styles.modalTitle}>Enter Events Details</Text>
+//                 <View style={styles.modalActions}>
+//                   <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
+//                     <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={toggleMaximize} style={styles.modalActionButton}>
+//                     <AntDesign name={isMaximized ? 'shrink' : 'arrowsalt'} size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={() => setAddModalVisible(false)} style={styles.modalActionButton}>
+//                     <AntDesign name="closecircle" size={24} color="#e74c3c" />
+//                   </TouchableOpacity>
+//                 </View>
+//               </View>
+//               <ScrollView>
+//                 <Text style={styles.modalDescription}>{selectedVenue.description}</Text>
+
+//                 {/* People Input */}
+//                 <TextInput
+//                   style={styles.input}
+//                   placeholder="Enter number of people"
+//                   value={people}
+//                   onChangeText={setPeople}
+//                   keyboardType="numeric"
+//                 />
+
+//                 {/* Date Selection */}
+//                 <View style={styles.dateTimeContainer}>
+//                   <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+//                     <MaterialCommunityIcons name="calendar" size={24} color="#3498db" />
+//                     <Text>{date.toDateString()}</Text>
+//                   </TouchableOpacity>
+//                   {showDatePicker && (
+//                     <DateTimePicker
+//                       value={date}
+//                       mode="date"
+//                       display="default"
+//                       onChange={onDateChange}
+//                     />
+//                   )}
+//                 </View>
+
+//                 {/* Time Selection */}
+//                 <View style={styles.dateTimeContainer}>
+//                   <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+//                     <MaterialCommunityIcons name="clock" size={24} color="#3498db" />
+//                     <Text>{time.toLocaleTimeString()}</Text>
+//                   </TouchableOpacity>
+//                   {showTimePicker && (
+//                     <DateTimePicker
+//                       value={time}
+//                       mode="time"
+//                       display="default"
+//                       onChange={onTimeChange}
+//                     />
+//                   )}
+//                 </View>
+
+//                 {/* Add to Plan Button */}
+//                 <TouchableOpacity style={styles.button} onPress={handlePlanSubmit}>
+//                   <Text style={styles.buttonText}>Add to Plan</Text>
+//                 </TouchableOpacity>
+//               </ScrollView>
+//             </View>
+//           </Animated.View>
+//         </Modal>
+//       )}
+//     </View>
+//   );
+// }
+
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated, Alert } from 'react-native';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
+import { ServiceVenue, BASE_URL } from '../ServiceAPIs/UsersAPIs';
 
 export default function VenueSelection() {
-  const [venues, setVenues] = useState([]); // State for fetched data
+  const [venues, setVenues] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
-  const [budget, setBudget] = useState(1000); // Default budget
+  const [budget, setBudget] = useState(1000);
   const [people, setPeople] = useState('');
+  const [peopleError, setPeopleError] = useState(''); // Error state for people input
   const [isMaximized, setIsMaximized] = useState(false);
   const [translateY] = useState(new Animated.Value(0));
   const [calculatedBudget, setCalculatedBudget] = useState(0);
 
+  // Date and Time State
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const navigation = useNavigation();
 
-  // for fetch data 
   useEffect(() => {
-    // Fetch data from the API when the component loads
     const fetchVenues = async () => {
       try {
         const data = await ServiceVenue();
-        // Transform data into the required structure if needed
         const transformedData = data.map((item) => ({
           id: item.serviceId,
           name: item.serviceName,
@@ -35,8 +502,8 @@ export default function VenueSelection() {
           capacity: item.serviceCapacity,
           price: item.servicePrice,
           city: item.serviceCity,
-          rating: 4.5, // Hardcoded rating if not provided by API
-          image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`, // Use the image URL from API
+          rating: 4.5,
+          image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`,
         }));
         setVenues(transformedData);
       } catch (error) {
@@ -46,8 +513,6 @@ export default function VenueSelection() {
 
     fetchVenues();
   }, []);
-
-
 
   const handleAddVenue = (venue) => {
     setSelectedVenue(venue);
@@ -59,45 +524,41 @@ export default function VenueSelection() {
     setViewDetailsModalVisible(true);
   };
 
-  // const handlePlanSubmit = () => {
-  //   navigation.navigate('Plan', {
-  //     venue: selectedVenue,
-  //     budget,
-  //     people,
-  //   });
-  //   setAddModalVisible(false);
-  // };
   const handlePlanSubmit = () => {
     if (!people || isNaN(people) || parseInt(people) <= 0) {
       alert('Please enter a valid number of people');
       return;
     }
 
-    // Calculate the budget for the venue
+    // Check if number of people exceeds venue capacity
+    if (parseInt(people) > selectedVenue.capacity) {
+      Alert.alert(
+        'Invalid Number of People',
+        `Number of people cannot exceed venue capacity of ${selectedVenue.capacity}`,
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
     const price = selectedVenue.price;
     const capacity = selectedVenue.capacity;
 
-    // Calculate the venue's budget based on number of people
     const venueBudget = (price / capacity) * parseInt(people);
-
-    // Calculate the total cost for the selected services
-    // const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
-
-    // Calculate the total budget
-    // const updatedBudget = parseFloat(venueBudget) + servicesBudget;
     setCalculatedBudget(venueBudget);
 
-    // Pass the updated budget to Plan.js
     navigation.navigate('Plan', {
       estimatedBudget: venueBudget,
+      date: date,
+      time: time,
+      people: people,
+      venue: selectedVenue,
     });
   };
-  
 
   const toggleMaximize = () => {
     setIsMaximized(!isMaximized);
     Animated.timing(translateY, {
-      toValue: isMaximized ? 0 : -50, // Animation for maximize/minimize
+      toValue: isMaximized ? 0 : -50,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -105,7 +566,7 @@ export default function VenueSelection() {
 
   const minimizeModal = () => {
     Animated.timing(translateY, {
-      toValue: 600, // Move modal down
+      toValue: 600,
       duration: 300,
       useNativeDriver: true,
     }).start(() => {
@@ -114,23 +575,14 @@ export default function VenueSelection() {
     });
   };
 
-  const renderComments = (comments) => {
-    return comments.map((comment) => (
-      <View key={comment.id} style={styles.commentContainer}>
-        <View style={styles.commentHeader}>
-          <MaterialCommunityIcons name="account-circle" size={36} color="#3498db" />
-          <Text style={styles.commentUsername}>{comment.username}</Text>
-        </View>
-        <Text style={styles.commentText}>{comment.text}</Text>
-        {comment.photos.length > 0 && (
-          <View style={styles.commentPhotosContainer}>
-            {comment.photos.map((photo, index) => (
-              <Image key={index} source={{ uri: photo }} style={styles.commentPhoto} />
-            ))}
-          </View>
-        )}
-      </View>
-    ));
+  const onDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    setDate(selectedDate || date);
+  };
+
+  const onTimeChange = (event, selectedTime) => {
+    setShowTimePicker(false);
+    setTime(selectedTime || time);
   };
 
   return (
@@ -138,17 +590,15 @@ export default function VenueSelection() {
       <Text style={styles.title}>Select a Venue</Text>
 
       <FlatList
-        data={venues} // Use the fetched data
+        data={venues}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.venueCard}>
             <Image source={{ uri: item.image }} style={styles.venueImage} />
             <View style={styles.details}>
               <Text style={styles.venueName}>{item.name}</Text>
-              {/* <Text style={styles.venueDescription}>{item.description}</Text> */}
               <Text style={styles.venueCity}>City: {item.city}</Text>
               <Text style={styles.venueRating}>Rating: {item.rating}</Text>
-              {/* View Details Button */}
               <TouchableOpacity
                 style={styles.viewDetailButton}
                 onPress={() => handleViewDetails(item)}
@@ -156,7 +606,6 @@ export default function VenueSelection() {
                 <Text style={styles.viewDetailText}>View Details</Text>
               </TouchableOpacity>
             </View>
-            {/* Add Button */}
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => handleAddVenue(item)}
@@ -167,45 +616,13 @@ export default function VenueSelection() {
         )}
       />
 
-      {/* View Details Modal */}
-      {selectedVenue && (
-        <Modal visible={viewDetailsModalVisible} animationType="none" transparent onRequestClose={() => setViewDetailsModalVisible(false)}>
-          <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
-            <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Venue Details</Text>
-                <View style={styles.modalActions}>
-                  <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
-                    <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={toggleMaximize} style={styles.modalActionButton}>
-                    <AntDesign name={isMaximized ? 'shrink' : 'arrowsalt'} size={24} color="#7f8c8d" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setViewDetailsModalVisible(false)} style={styles.modalActionButton}>
-                    <AntDesign name="closecircle" size={24} color="#e74c3c" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <ScrollView>
-                <Text style={styles.modalDescription}>{selectedVenue.description}</Text>
-                <Text style={styles.modalDescription}>City: {selectedVenue.city}</Text>
-                <Text style={styles.modalDescription}>Rating: {selectedVenue.rating}</Text>
-                <View style={styles.commentContainer}>
-                  {/* {renderComments(selectedVenue.comments)} */}
-                </View>
-              </ScrollView>
-            </View>
-          </Animated.View>
-        </Modal>
-      )}
-
       {/* Add Venue Modal */}
       {selectedVenue && (
         <Modal visible={addModalVisible} animationType="none" transparent onRequestClose={() => setAddModalVisible(false)}>
           <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
             <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Enter Event Details</Text>
+                <Text style={styles.modalTitle}>Enter Events Details</Text>
                 <View style={styles.modalActions}>
                   <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
                     <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
@@ -220,13 +637,55 @@ export default function VenueSelection() {
               </View>
               <ScrollView>
                 <Text style={styles.modalDescription}>{selectedVenue.description}</Text>
+
+                {/* People Input */}
                 <TextInput
                   style={styles.input}
                   placeholder="Enter number of people"
                   value={people}
-                  onChangeText={setPeople}
+                  onChangeText={(text) => {
+                    setPeople(text);
+                    setPeopleError(''); // Reset error message when the user starts typing
+                  }}
                   keyboardType="numeric"
                 />
+                {peopleError ? (
+                  <Text style={styles.errorText}>{peopleError}</Text>
+                ) : null}
+
+                {/* Date Selection */}
+                <View style={styles.dateTimeContainer}>
+                  <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                    <MaterialCommunityIcons name="calendar" size={24} color="#3498db" />
+                    <Text>{date.toDateString()}</Text>
+                  </TouchableOpacity>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={date}
+                      mode="date"
+                      display="default"
+                      onChange={onDateChange}
+                    />
+                  )}
+                </View>
+
+                {/* Time Selection */}
+                <View style={styles.dateTimeContainer}>
+                  <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+                    <MaterialCommunityIcons name="clock" size={24} color="#3498db" />
+                    <Text>{time.toLocaleTimeString()}</Text>
+                  </TouchableOpacity>
+                  {showTimePicker && (
+                    <DateTimePicker
+                      value={time}
+                      mode="time"
+                      display="default"
+                      onChange={onTimeChange}
+                    />
+                  )}
+                </View>
+
+                {/* Add to Plan Button */}
                 <TouchableOpacity style={styles.button} onPress={handlePlanSubmit}>
                   <Text style={styles.buttonText}>Add to Plan</Text>
                 </TouchableOpacity>
@@ -238,12 +697,16 @@ export default function VenueSelection() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F9F3EC',
     padding: 20,
+  },
+  dateTimeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
   },
   title: {
     fontSize: 28,
@@ -295,11 +758,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   viewDetailButton: {
-    backgroundColor: '#3498db',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
+    backgroundColor: '#1f1f1f',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
     borderRadius: 25,
-    marginTop: 12,
+    marginTop: 10,
+    elevation: 3,
   },
   viewDetailText: {
     color: '#fff',
