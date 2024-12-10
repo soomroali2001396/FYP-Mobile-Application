@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { ServiceCatering,BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import the API function
 
@@ -14,7 +15,10 @@ export default function CateringSelection() {
   const [isMaximized, setIsMaximized] = useState(false);
   const [translateY] = useState(new Animated.Value(0));
   const [calculatedBudget, setCalculatedBudget] = useState(0);
-
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const navigation = useNavigation();
 
   // Fetch catering data on component mount
@@ -52,6 +56,17 @@ export default function CateringSelection() {
     setSelectedCatering(catering);
     setViewDetailsModalVisible(true);
   };
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(false);
+    setDate(currentDate);
+  };
+
+  const onTimeChange = (event, selectedTime) => {
+    const currentTime = selectedTime || time;
+    setShowTimePicker(false);
+    setTime(currentTime);
+  };
 
   const handlePlanSubmit = () => {
     if (!people || isNaN(people) || parseInt(people) <= 0) {
@@ -76,6 +91,10 @@ export default function CateringSelection() {
     // Pass the updated budget to Plan.js
     navigation.navigate('Plan', {
       estimatedBudget: cateringBudget,
+      date: date,
+      time: time,
+      people: people,
+      catering: selectedCatering,
     });
   };
 
@@ -190,13 +209,36 @@ export default function CateringSelection() {
                   onChangeText={(text) => setPeople(text)}
                   value={people}
                 />
-                {/* <TextInput
-                  style={styles.input}
-                  placeholder="Enter your budget"
-                  keyboardType="numeric"
-                  onChangeText={(text) => setBudget(text)}
-                  value={budget.toString()}
-                /> */}
+                <View style={styles.dateTimeContainer}>
+                  <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                    <MaterialCommunityIcons name="calendar" size={24} color="#3498db" />
+                    <Text>{date.toDateString()}</Text>
+                  </TouchableOpacity>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={date}
+                      mode="date"
+                      display="default"
+                      onChange={onDateChange}
+                    />
+                  )}
+                </View>
+
+                {/* Time Selection */}
+                <View style={styles.dateTimeContainer}>
+                  <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+                    <MaterialCommunityIcons name="clock" size={24} color="#3498db" />
+                    <Text>{time.toLocaleTimeString()}</Text>
+                  </TouchableOpacity>
+                  {showTimePicker && (
+                    <DateTimePicker
+                      value={time}
+                      mode="time"
+                      display="default"
+                      onChange={onTimeChange}
+                    />
+                  )}
+                  </View>
                 <TouchableOpacity style={styles.submitButton} onPress={handlePlanSubmit}>
                   <Text style={styles.submitButtonText}>Add to Plan</Text>
                 </TouchableOpacity>
@@ -214,6 +256,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F3EC',
     padding: 20,
+    marginTop: 20,
   },
   title: {
     fontSize: 24,
@@ -356,13 +399,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   modalContent: {
-    width: 350,
-    padding: 20,
     backgroundColor: '#F9F3EC',
+    width: '80%',
     borderRadius: 20,
+    padding: 25,
     alignItems: 'center',
-    maxHeight: '80%',
-    elevation: 5,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
   },
   maximizedContent: {
     width: '90%',

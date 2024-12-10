@@ -73,7 +73,6 @@ function BottomTabNavigator() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-
           switch (route.name) {
             case 'Dashboard':
               iconName = 'view-dashboard';
@@ -81,34 +80,34 @@ function BottomTabNavigator() {
             case 'Menu':
               iconName = 'menu';
               break;
-           
           }
 
-          return (
-            <View style={focused ? styles.activeTab : null}>
-              <MaterialCommunityIcons name={iconName} color={color} size={focused ? 30 : 25} />
-            </View>
-          );
+          return <MaterialCommunityIcons name={iconName} color={color} size={focused ? 30 : 25} />;
         },
-        tabBarActiveTintColor: '#ffffff',
+        tabBarActiveTintColor: '#6A4E36',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
-          backgroundColor: 'transparent',
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: 80,
-          borderTopWidth: 0,
-          elevation: 0,
-          paddingBottom: 10, // Padding to keep the tab bar fixed at the bottom
+          height: 60, // Set a fixed height for the tab bar
+          backgroundColor: '#F9F3EC', // Set a background color if needed
+          borderTopWidth: 0, // Remove border
+          elevation: 0, // Remove shadow/elevation for a cleaner look
         },
-        tabBarBackground: () => <CustomTabBarBackground />,
       })}
     >
-      <Tab.Screen name="Dashboard" component={Dashboard} />
-      <Tab.Screen name="Menu" component={Menu} />
-      {/* <Tab.Screen name="Profile" component={Profile} /> */}
+      <Tab.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Menu"
+        component={Menu}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -118,10 +117,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <StatusBar 
-          barStyle="light-content"
-          backgroundColor="#000"
-        />
+      <StatusBar hidden={true} />
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {/* Splash, Login, and Signup Screens */}
           <Stack.Screen name="Splash" component={Splash} />
@@ -170,17 +166,15 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '200%',
+    backgroundColor: '#6A4E36',
+    paddingBottom: 60, // Ensure there's enough space from the bottom
   },
   svgBackground: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 50,
+    height: 80, // Adjusted height for better alignment with the tab bar
     zIndex: -1,
   },
   activeTab: {

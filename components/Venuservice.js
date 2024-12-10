@@ -702,6 +702,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F3EC',
     padding: 20,
+    marginTop: 20,
   },
   dateTimeContainer: {
     flexDirection: 'row',
@@ -822,13 +823,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   modalContent: {
-    width: 350,
-    padding: 20,
     backgroundColor: '#F9F3EC',
+    width: '80%',
     borderRadius: 20,
+    padding: 25,
     alignItems: 'center',
-    maxHeight: '80%',
-    elevation: 5,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
   },
   maximizedContent: {
     width: '90%',

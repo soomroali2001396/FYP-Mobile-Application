@@ -1,23 +1,279 @@
-import React, { useState,useEffect } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, TextInput, Animated } from 'react-native';
+// import React, { useState,useEffect } from 'react';
+// import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, TextInput, Animated } from 'react-native';
+// import { AntDesign } from '@expo/vector-icons';
+// import { useNavigation } from '@react-navigation/native';
+// import {ServiceTransportation,BASE_URL } from '../../ServiceAPIs/UsersAPIs'; // Import the API function
+// import {MaterialCommunityIcons } from '@expo/vector-icons';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+
+
+// export default function TransportSelection() {
+//   const [transports, setTransports] = useState([]); // State for fetched transport data
+//   const [selectedTransport, setSelectedTransport] = useState(null);
+//   const [addModalVisible, setAddModalVisible] = useState(false);
+//   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
+//   // const [budget, setBudget] = useState(1000); // Default budget
+//   const [people, setPeople] = useState('');
+//   const [isMaximized, setIsMaximized] = useState(false);
+//   const [translateY] = useState(new Animated.Value(0));
+//   const [calculatedBudget, setCalculatedBudget] = useState(0);
+//   const [date, setDate] = useState(new Date());
+//   const [time, setTime] = useState(new Date());
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [showTimePicker, setShowTimePicker] = useState(false);
+//   const navigation = useNavigation();
+
+//   // Fetch transport data on component mount
+//   useEffect(() => {
+//     const fetchTransports = async () => {
+//       try {
+//         const data = await ServiceTransportation();
+//         const transformedData = data.map((item) => ({
+//           id: item.serviceId,
+//           name: item.serviceName,
+//           description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price/Head: ${item.servicePrice}`,
+//           type: item.serviceType,
+//           address: item.serviceArea,
+//           capacity: item.serviceCapacity,
+//           price: item.servicePrice,
+//           city: item.serviceCity,
+//           rating: 4.5, // Hardcoded rating if not provided by API
+//           image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`, // Use the image URL from API
+//         }));
+//         setTransports(transformedData);
+//       } catch (error) {
+//         console.error('Error fetching transport options:', error.message);
+//       }
+//     };
+
+//     fetchTransports();
+//   }, []);
+
+//   const handleAddTransport = (transport) => {
+//     setSelectedTransport(transport);
+//     setAddModalVisible(true);
+//   };
+
+//   const handleViewDetails = (transport) => {
+//     setSelectedTransport(transport);
+//     setViewDetailsModalVisible(true);
+//   };
+
+//   const handlePlanSubmit = () => {
+//     if (!people || isNaN(people) || parseInt(people) <= 0) {
+//       alert('Please enter a valid number of people');
+//       return;
+//     }
+
+//     // Calculate the budget for the venue
+//     const price = selectedTransport.price;
+//     const capacity = selectedTransport.capacity;
+
+//     // Calculate the venue's budget based on number of people
+//     const transportBudget = price  * parseInt(people);
+
+//     // Calculate the total cost for the selected services
+//     // const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
+
+//     // Calculate the total budget
+//     // const updatedBudget = parseFloat(venueBudget) + servicesBudget;
+//     setCalculatedBudget(transportBudget);
+
+//     // Pass the updated budget to Plan.js
+//     navigation.navigate('Plan', {
+//       estimatedBudget: transportBudget,
+//       date: date,
+//       time: time,
+//       people: people,
+//       transports: selectedTransport,
+//     });
+//   };
+
+//   const toggleMaximize = () => {
+//     setIsMaximized(!isMaximized);
+//     Animated.timing(translateY, {
+//       toValue: isMaximized ? 0 : -50, // Animation for maximize/minimize
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start();
+//   };
+
+//   const minimizeModal = () => {
+//     Animated.timing(translateY, {
+//       toValue: 600, // Move modal down
+//       duration: 300,
+//       useNativeDriver: true,
+//     }).start(() => {
+//       setAddModalVisible(false);
+//       setViewDetailsModalVisible(false);
+//     });
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Select a Transport</Text>
+//       <FlatList
+//         data={transports} // Display fetched transport data
+//         keyExtractor={(item) => item.id.toString()}
+//         renderItem={({ item }) => (
+//           <View style={styles.transportCard}>
+//             <Image source={{ uri: item.image }} style={styles.transportImage} />
+//             <View style={styles.details}>
+//               <Text style={styles.transportName}>{item.name}</Text>
+//               {/* <Text style={styles.transportDescription}>{item.description}</Text> */}
+//               <Text style={styles.transportCity}>City: {item.city}</Text>
+//               <Text style={styles.transportRating}>Rating: {item.rating}</Text>
+//               {/* View Details Button */}
+//               <TouchableOpacity
+//                 style={styles.viewDetailButton}
+//                 onPress={() => handleViewDetails(item)}
+//               >
+//                 <Text style={styles.viewDetailText}>View Details</Text>
+//               </TouchableOpacity>
+//             </View>
+//             {/* Add Button */}
+//             <TouchableOpacity
+//               style={styles.addButton}
+//               onPress={() => handleAddTransport(item)}
+//             >
+//               <AntDesign name="plus" size={24} color="#fff" />
+//             </TouchableOpacity>
+//           </View>
+//         )}
+//       />
+//       {/* View Details Modal */}
+//       {selectedTransport && (
+//         <Modal visible={viewDetailsModalVisible} animationType="none" transparent onRequestClose={() => setViewDetailsModalVisible(false)}>
+//           <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
+//             <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
+//               <View style={styles.modalHeader}>
+//                 <Text style={styles.modalTitle}>Transport Details</Text>
+//                 <View style={styles.modalActions}>
+//                   <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
+//                     <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={toggleMaximize} style={styles.modalActionButton}>
+//                     <AntDesign name={isMaximized ? 'shrink' : 'arrowsalt'} size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={() => setViewDetailsModalVisible(false)} style={styles.modalActionButton}>
+//                     <AntDesign name="closecircle" size={24} color="#e74c3c" />
+//                   </TouchableOpacity>
+//                 </View>
+//               </View>
+//               <ScrollView>
+//                 <Text style={styles.modalDescription}>Description: {selectedTransport.description}</Text>
+//                 <Text style={styles.modalDescription}>City: {selectedTransport.city}</Text>
+//                 <Text style={styles.modalDescription}>Rating: {selectedTransport.rating}</Text>
+//               </ScrollView>
+//             </View>
+//           </Animated.View>
+//         </Modal>
+//       )}
+
+//       {/* Add Transport Modal */}
+//       {selectedTransport && (
+//         <Modal visible={addModalVisible} animationType="none" transparent onRequestClose={() => setAddModalVisible(false)}>
+//           <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
+//             <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
+//               <View style={styles.modalHeader}>
+//                 <Text style={styles.modalTitle}>Enter Event Details</Text>
+//                 <View style={styles.modalActions}>
+//                   <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
+//                     <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={toggleMaximize} style={styles.modalActionButton}>
+//                     <AntDesign name={isMaximized ? 'shrink' : 'arrowsalt'} size={24} color="#7f8c8d" />
+//                   </TouchableOpacity>
+//                   <TouchableOpacity onPress={() => setAddModalVisible(false)} style={styles.modalActionButton}>
+//                     <AntDesign name="closecircle" size={24} color="#e74c3c" />
+//                   </TouchableOpacity>
+//                 </View>
+//               </View>
+//               <ScrollView>
+//                 <Text style={styles.modalDescription}>{selectedTransport.description}</Text>
+//                 <TextInput
+//                   style={styles.input}
+//                   placeholder="Number of People"
+//                   value={people}
+//                   onChangeText={setPeople}
+//                   keyboardType="numeric"
+//                 />
+//                 <View style={styles.dateTimeContainer}>
+//                   <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+//                     <MaterialCommunityIcons name="calendar" size={24} color="#3498db" />
+//                     <Text>{date.toDateString()}</Text>
+//                   </TouchableOpacity>
+//                   {showDatePicker && (
+//                     <DateTimePicker
+//                       value={date}
+//                       mode="date"
+//                       display="default"
+//                       onChange={onDateChange}
+//                     />
+//                   )}
+//                 </View>
+
+//                 {/* Time Selection */}
+//                 <View style={styles.dateTimeContainer}>
+//                   <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+//                     <MaterialCommunityIcons name="clock" size={24} color="#3498db" />
+//                     <Text>{time.toLocaleTimeString()}</Text>
+//                   </TouchableOpacity>
+//                   {showTimePicker && (
+//                     <DateTimePicker
+//                       value={time}
+//                       mode="time"
+//                       display="default"
+//                       onChange={onTimeChange}
+//                     />
+//                   )}
+//                   </View>
+//                 {/* <Text style={styles.modalDescription}>Budget: {budget}</Text> */}
+//                 <TouchableOpacity style={styles.button} onPress={handlePlanSubmit}>
+//                   <Text style={styles.buttonText}>Add to Plan</Text>
+//                 </TouchableOpacity>
+//               </ScrollView>
+//             </View>
+//           </Animated.View>
+//         </Modal>
+//       )}
+//     </View>
+//   );
+// }
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+  TextInput,
+  Animated,
+} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import {ServiceTransportation,BASE_URL } from '../../ServiceAPIs/UsersAPIs'; // Import the API function
+import { ServiceTransportation, BASE_URL } from '../../ServiceAPIs/UsersAPIs';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function TransportSelection() {
-  const [transports, setTransports] = useState([]); // State for fetched transport data
+  const [transports, setTransports] = useState([]);
   const [selectedTransport, setSelectedTransport] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
-  // const [budget, setBudget] = useState(1000); // Default budget
   const [people, setPeople] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
   const [translateY] = useState(new Animated.Value(0));
   const [calculatedBudget, setCalculatedBudget] = useState(0);
-
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const navigation = useNavigation();
 
-  // Fetch transport data on component mount
   useEffect(() => {
     const fetchTransports = async () => {
       try {
@@ -31,8 +287,8 @@ export default function TransportSelection() {
           capacity: item.serviceCapacity,
           price: item.servicePrice,
           city: item.serviceCity,
-          rating: 4.5, // Hardcoded rating if not provided by API
-          image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`, // Use the image URL from API
+          rating: 4.5,
+          image: `${BASE_URL}/services/images/${item.pictures[0]?.pictureUrl}`,
         }));
         setTransports(transformedData);
       } catch (error) {
@@ -53,36 +309,40 @@ export default function TransportSelection() {
     setViewDetailsModalVisible(true);
   };
 
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(false);
+    setDate(currentDate);
+  };
+
+  const onTimeChange = (event, selectedTime) => {
+    const currentTime = selectedTime || time;
+    setShowTimePicker(false);
+    setTime(currentTime);
+  };
+
   const handlePlanSubmit = () => {
     if (!people || isNaN(people) || parseInt(people) <= 0) {
       alert('Please enter a valid number of people');
       return;
     }
 
-    // Calculate the budget for the venue
-    const price = selectedTransport.price;
-    const capacity = selectedTransport.capacity;
-
-    // Calculate the venue's budget based on number of people
-    const transportBudget = price  * parseInt(people);
-
-    // Calculate the total cost for the selected services
-    // const servicesBudget = Object.values(selectedVenue).reduce((sum, price) => sum + price, 0);
-
-    // Calculate the total budget
-    // const updatedBudget = parseFloat(venueBudget) + servicesBudget;
+    const transportBudget = selectedTransport.price * parseInt(people);
     setCalculatedBudget(transportBudget);
 
-    // Pass the updated budget to Plan.js
     navigation.navigate('Plan', {
       estimatedBudget: transportBudget,
+      date: date,
+      time: time,
+      people: people,
+      transports: selectedTransport,
     });
   };
 
   const toggleMaximize = () => {
     setIsMaximized(!isMaximized);
     Animated.timing(translateY, {
-      toValue: isMaximized ? 0 : -50, // Animation for maximize/minimize
+      toValue: isMaximized ? 0 : -50,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -90,7 +350,7 @@ export default function TransportSelection() {
 
   const minimizeModal = () => {
     Animated.timing(translateY, {
-      toValue: 600, // Move modal down
+      toValue: 600,
       duration: 300,
       useNativeDriver: true,
     }).start(() => {
@@ -103,17 +363,15 @@ export default function TransportSelection() {
     <View style={styles.container}>
       <Text style={styles.title}>Select a Transport</Text>
       <FlatList
-        data={transports} // Display fetched transport data
+        data={transports}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.transportCard}>
             <Image source={{ uri: item.image }} style={styles.transportImage} />
             <View style={styles.details}>
               <Text style={styles.transportName}>{item.name}</Text>
-              {/* <Text style={styles.transportDescription}>{item.description}</Text> */}
               <Text style={styles.transportCity}>City: {item.city}</Text>
               <Text style={styles.transportRating}>Rating: {item.rating}</Text>
-              {/* View Details Button */}
               <TouchableOpacity
                 style={styles.viewDetailButton}
                 onPress={() => handleViewDetails(item)}
@@ -121,7 +379,6 @@ export default function TransportSelection() {
                 <Text style={styles.viewDetailText}>View Details</Text>
               </TouchableOpacity>
             </View>
-            {/* Add Button */}
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => handleAddTransport(item)}
@@ -131,54 +388,42 @@ export default function TransportSelection() {
           </View>
         )}
       />
+
       {/* View Details Modal */}
       {selectedTransport && (
-        <Modal visible={viewDetailsModalVisible} animationType="none" transparent onRequestClose={() => setViewDetailsModalVisible(false)}>
-          <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
-            <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Transport Details</Text>
-                <View style={styles.modalActions}>
-                  <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
-                    <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={toggleMaximize} style={styles.modalActionButton}>
-                    <AntDesign name={isMaximized ? 'shrink' : 'arrowsalt'} size={24} color="#7f8c8d" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setViewDetailsModalVisible(false)} style={styles.modalActionButton}>
-                    <AntDesign name="closecircle" size={24} color="#e74c3c" />
-                  </TouchableOpacity>
-                </View>
-              </View>
+        <Modal
+          visible={viewDetailsModalVisible}
+          animationType="fade"
+          transparent
+          onRequestClose={() => setViewDetailsModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Transport Details</Text>
               <ScrollView>
                 <Text style={styles.modalDescription}>Description: {selectedTransport.description}</Text>
                 <Text style={styles.modalDescription}>City: {selectedTransport.city}</Text>
                 <Text style={styles.modalDescription}>Rating: {selectedTransport.rating}</Text>
               </ScrollView>
+              <TouchableOpacity onPress={() => setViewDetailsModalVisible(false)}>
+                <Text style={styles.buttonText}>Close</Text>
+              </TouchableOpacity>
             </View>
-          </Animated.View>
+          </View>
         </Modal>
       )}
 
       {/* Add Transport Modal */}
       {selectedTransport && (
-        <Modal visible={addModalVisible} animationType="none" transparent onRequestClose={() => setAddModalVisible(false)}>
-          <Animated.View style={[styles.modalOverlay, isMaximized && styles.maximizedOverlay, { transform: [{ translateY }] }]}>
-            <View style={[styles.modalContent, isMaximized && styles.maximizedContent]}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Enter Event Details</Text>
-                <View style={styles.modalActions}>
-                  <TouchableOpacity onPress={minimizeModal} style={styles.modalActionButton}>
-                    <AntDesign name="minuscircle" size={24} color="#7f8c8d" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={toggleMaximize} style={styles.modalActionButton}>
-                    <AntDesign name={isMaximized ? 'shrink' : 'arrowsalt'} size={24} color="#7f8c8d" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setAddModalVisible(false)} style={styles.modalActionButton}>
-                    <AntDesign name="closecircle" size={24} color="#e74c3c" />
-                  </TouchableOpacity>
-                </View>
-              </View>
+        <Modal
+          visible={addModalVisible}
+          animationType="fade"
+          transparent
+          onRequestClose={() => setAddModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Enter Event Details</Text>
               <ScrollView>
                 <Text style={styles.modalDescription}>{selectedTransport.description}</Text>
                 <TextInput
@@ -188,13 +433,30 @@ export default function TransportSelection() {
                   onChangeText={setPeople}
                   keyboardType="numeric"
                 />
-                {/* <Text style={styles.modalDescription}>Budget: {budget}</Text> */}
+                <View style={styles.dateTimeContainer}>
+                  <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                    <MaterialCommunityIcons name="calendar" size={24} color="#3498db" />
+                    <Text>{date.toDateString()}</Text>
+                  </TouchableOpacity>
+                  {showDatePicker && (
+                    <DateTimePicker value={date} mode="date" display="default" onChange={onDateChange} />
+                  )}
+                </View>
+                <View style={styles.dateTimeContainer}>
+                  <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+                    <MaterialCommunityIcons name="clock" size={24} color="#3498db" />
+                    <Text>{time.toLocaleTimeString()}</Text>
+                  </TouchableOpacity>
+                  {showTimePicker && (
+                    <DateTimePicker value={time} mode="time" display="default" onChange={onTimeChange} />
+                  )}
+                </View>
                 <TouchableOpacity style={styles.button} onPress={handlePlanSubmit}>
                   <Text style={styles.buttonText}>Add to Plan</Text>
                 </TouchableOpacity>
               </ScrollView>
             </View>
-          </Animated.View>
+          </View>
         </Modal>
       )}
     </View>
@@ -206,6 +468,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F3EC',
     padding: 20,
+    marginTop: 20,
   },
   title: {
     fontSize: 28,
@@ -321,13 +584,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   modalContent: {
-    width: 350,
-    padding: 20,
     backgroundColor: '#F9F3EC',
+    width: '80%',
     borderRadius: 20,
+    padding: 25,
     alignItems: 'center',
-    maxHeight: '80%',
-    elevation: 5,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
   },
   maximizedContent: {
     width: '90%',

@@ -234,6 +234,7 @@ export default function AddEventScreen({ navigation, route }) {
               data={availableServices}
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
+                
                 <TouchableOpacity onPress={() => addService(item.label)} style={styles.serviceOption}>
                   <View style={styles.serviceOptionContent}>
                     <Icon name={item.icon} size={50} color="#6A4E36" style={styles.serviceIcon} />
@@ -300,6 +301,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
+    marginTop: 20,
     marginBottom: 20,
     color: '#333',
     textAlign: 'center',

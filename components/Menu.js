@@ -460,11 +460,12 @@ const styles = StyleSheet.create({
     backgroundColor:'#F9F3EC',
   },
   header: {
-    padding: 20,
+    padding: 50,
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     backgroundColor:'#F9F3EC',
+  
   },
   mainTitle: {
     fontSize: 28,

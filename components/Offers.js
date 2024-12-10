@@ -294,13 +294,16 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
   },
   header: {
-    padding: 15,
-    borderRadius: 15,
-    marginBottom: 20,
-    alignItems: "center",
+    padding: 30,
+    backgroundColor: '#6A4E36',
+    height: 100,
+    paddingHorizontal: 20,
+    // flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    
   },
   headerText: {
     fontSize: 30,
