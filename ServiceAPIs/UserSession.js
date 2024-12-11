@@ -47,3 +47,4 @@ export const removeUserSession = async () => {
     console.error('Error removing session:', error);
   }
 };
+

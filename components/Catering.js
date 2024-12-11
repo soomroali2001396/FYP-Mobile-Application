@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated } from 'react-native';
+import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, Modal, ScrollView, Animated,Alert } from 'react-native';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
@@ -71,6 +71,16 @@ export default function CateringSelection() {
   const handlePlanSubmit = () => {
     if (!people || isNaN(people) || parseInt(people) <= 0) {
       alert('Please enter a valid number of people');
+      return;
+    }
+
+    // Check if number of people exceeds venue capacity
+    if (parseInt(people) > selectedCatering.capacity) {
+      Alert.alert(
+        'Invalid Number of People',
+        `Number of people cannot exceed venue capacity of ${selectedCatering.capacity}`,
+        [{ text: 'OK' }]
+      );
       return;
     }
 

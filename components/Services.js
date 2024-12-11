@@ -800,6 +800,689 @@
 
 // export default ServicesDisplay;
 
+// import React, { useState, useEffect } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   TouchableOpacity,
+//   FlatList,
+//   Image,
+//   Modal,
+//   Animated,
+//   StyleSheet,
+// } from 'react-native';
+// import Icon from 'react-native-vector-icons/MaterialIcons';
+// import { ServiceVenue, ServiceCatering, ServiceAll,BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import your API functions
+
+// const ServiceCard = ({ item, onViewDetails, onAdd, animatedStyle }) => (
+//   <Animated.View style={[styles.card, animatedStyle]}>
+//     <Image source={{ uri: item.image }} style={styles.cardImage} />
+//     <View style={styles.cardContent}>
+//       <Text style={styles.cardTitle}>{item.title}</Text>
+//       <Text style={styles.cardDescription}>{item.area}, {item.city}</Text>
+//       <View style={styles.buttonContainer}>
+//         <TouchableOpacity style={styles.actionButton} onPress={() => onViewDetails(item)}>
+//           <Icon name="info" size={18} color="#fff" />
+//           <Text style={styles.buttonText}>Details</Text>
+//         </TouchableOpacity>
+//         <TouchableOpacity style={styles.actionButtonAdd} onPress={() => onAdd(item)}>
+//           <Icon name="add" size={18} color="#fff" />
+//           <Text style={styles.buttonText}>Add</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   </Animated.View>
+// );
+// const ServicesDisplay = () => {
+
+//   const [servicesData, setServicesData] = useState({
+//     venue: [],
+//     catering: [],
+//     otherServices: [],
+//   });
+
+//   const [selectedService, setSelectedService] = useState(null);
+//   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
+//   const [addModalVisible, setAddModalVisible] = useState(false);
+//   const [searchText, setSearchText] = useState('');
+//   const [selectedCategory, setSelectedCategory] = useState('venue');
+
+//   // Fetch data on component load
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const venues = await ServiceVenue();
+//         const catering = await ServiceCatering();
+//         const allServices = await ServiceAll();
+
+//         // Transform data
+//         const transformData = (data) =>
+//           data.map((item) => ({
+//             id: item.serviceId,
+//             title: item.serviceName,
+//             description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price: $${item.servicePrice}`,
+//             capacity: item.serviceCapacity,
+//             price: item.servicePrice,
+//             area: item.serviceArea,
+//             city: item.serviceCity,
+//             rating: 4.5, // Assuming hardcoded rating
+//             image: item.pictures.length
+//               ? `${BASE_URL}/services/images/${item.pictures[0].pictureUrl}`
+//               : 'https://via.placeholder.com/150', // Placeholder if no image
+//           }));
+
+//         setServicesData({
+//           venue: transformData(venues),
+//           catering: transformData(catering),
+//           otherServices: transformData(allServices),
+//         });
+//       } catch (error) {
+//         console.error('Error fetching services:', error.message);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   const filterData = () => {
+//     const data = servicesData[selectedCategory];
+//     return data.filter((service) =>
+//       service.title.toLowerCase().includes(searchText.toLowerCase())
+//     );
+//   };
+
+//   const handleViewDetails = (item) => {
+//     setSelectedService(item);
+//     setViewDetailsModalVisible(true);
+//   };
+
+//   const handleAdd = (item) => {
+//     setSelectedService(item);
+//     setAddModalVisible(true);
+//   };
+
+//   const handleConfirmAddToPlan = () => {
+//     // Navigate or perform actions after adding the service
+//     console.log('Service added to plan:', selectedService);
+//     setAddModalVisible(false);
+//   };
+
+//   const handleCancelAddToPlan = () => {
+//     setAddModalVisible(false);
+//   };
+
+//   const handleCategoryChange = (category) => {
+//     setSelectedCategory(category);
+//     setSearchText(''); // Clear search when switching category
+//   };
+
+//   const handleSearchChange = (text) => {
+//     setSearchText(text);
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <View style={styles.searchContainer}>
+//         <TextInput
+//           style={styles.searchInput}
+//           placeholder="Search Services..."
+//           value={searchText}
+//           onChangeText={handleSearchChange}
+//         />
+//         <View style={styles.categoryButtonsContainer}>
+//           <TouchableOpacity
+//             style={[
+//               styles.categoryButton,
+//               selectedCategory === 'venue' && styles.selectedCategoryButton,
+//             ]}
+//             onPress={() => handleCategoryChange('venue')}
+//           >
+//             <Icon name="event" size={20} color="#fff" />
+//             <Text style={styles.categoryButtonText}>Venue</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={[
+//               styles.categoryButton,
+//               selectedCategory === 'catering' && styles.selectedCategoryButton,
+//             ]}
+//             onPress={() => handleCategoryChange('catering')}
+//           >
+//             <Icon name="restaurant" size={20} color="#fff" />
+//             <Text style={styles.categoryButtonText}>Catering</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={[
+//               styles.categoryButton,
+//               selectedCategory === 'otherServices' && styles.selectedCategoryButton,
+//             ]}
+//             onPress={() => handleCategoryChange('otherServices')}
+//           >
+//             <Icon name="photo-camera" size={20} color="#fff" />
+//             <Text style={styles.categoryButtonText}>Other Services</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+
+//       <FlatList
+//         data={filterData()}
+//         renderItem={({ item }) => (
+//           <ServiceCard
+//             item={item}
+//             onViewDetails={handleViewDetails}
+//             onAdd={handleAdd}
+//           />
+//         )}
+//         keyExtractor={(item) => item.id.toString()}
+//       />
+
+//       {/* View Details Modal */}
+//       <Modal visible={viewDetailsModalVisible} transparent>
+//         <View style={styles.modalOverlay}>
+//           <View style={styles.modalContent}>
+//             {selectedService && (
+//               <>
+//                 <Text style={styles.modalTitle}>{selectedService.title}</Text>
+//                 <Image source={{ uri: selectedService.image }} style={styles.modalImage} />
+//                 <Text style={styles.modalText}>Capacity: {selectedService.capacity}</Text>
+//               <Text style={styles.modalText}>Price: {selectedService.price}</Text>
+//               <Text style={styles.modalText}>Area: {selectedService.area}</Text>
+//               <Text style={styles.modalText}>City: {selectedService.city}</Text>
+//               <Text style={styles.modalText}>Rating: {selectedService.rating}</Text>
+//                 <TouchableOpacity
+//                   style={styles.closeModalButton}
+//                   onPress={() => setViewDetailsModalVisible(false)}
+//                 >
+//                   <Text style={styles.buttonText}>Close</Text>
+//                 </TouchableOpacity>
+//               </>
+//             )}
+//           </View>
+//         </View>
+//       </Modal>
+
+//       {/* Add to Plan Modal */}
+//       <Modal visible={addModalVisible} transparent>
+//         <View style={styles.modalOverlay}>
+//           <View style={styles.modalContent}>
+//             <Text style={styles.modalTitle}>
+//               Do you want to add this service to your plan?
+//             </Text>
+//             <View style={styles.buttonContainer}>
+//               <TouchableOpacity
+//                 style={styles.actionButton}
+//                 onPress={handleConfirmAddToPlan}
+//               >
+//                 <Text style={styles.buttonText}>Yes</Text>
+//               </TouchableOpacity>
+//               <TouchableOpacity
+//                 style={styles.actionButtonAdd}
+//                 onPress={handleCancelAddToPlan}
+//               >
+//                 <Text style={styles.buttonText}>No</Text>
+//               </TouchableOpacity>
+//             </View>
+//           </View>
+//         </View>
+//       </Modal>
+//     </View>
+//   );
+// };
+
+
+// import React, { useState, useEffect } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   TouchableOpacity,
+//   FlatList,
+//   Image,
+//   Modal,
+//   Animated,
+//   ScrollView, // Import ScrollView for horizontal scrolling
+//   StyleSheet,
+// } from 'react-native';
+// import Icon from 'react-native-vector-icons/MaterialIcons';
+// import { ServiceVenue, ServiceCatering, ServiceAll, BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import your API functions
+
+// const ServiceCard = ({ item, onViewDetails, onAdd, animatedStyle }) => (
+//   <Animated.View style={[styles.card, animatedStyle]}>
+//     <Image source={{ uri: item.image }} style={styles.cardImage} />
+//     <View style={styles.cardContent}>
+//       <Text style={styles.cardTitle}>{item.title}</Text>
+//       <Text style={styles.cardDescription}>{item.area}, {item.city}</Text>
+//       <View style={styles.buttonContainer}>
+//         <TouchableOpacity style={styles.actionButton} onPress={() => onViewDetails(item)}>
+//           <Icon name="info" size={18} color="#fff" />
+//           <Text style={styles.buttonText}>Details</Text>
+//         </TouchableOpacity>
+//         <TouchableOpacity style={styles.actionButtonAdd} onPress={() => onAdd(item)}>
+//           <Icon name="add" size={18} color="#fff" />
+//           <Text style={styles.buttonText}>Add</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   </Animated.View>
+// );
+
+// const ServicesDisplay = () => {
+//   const [servicesData, setServicesData] = useState({
+//     venue: [],
+//     catering: [],
+//     allServices: [],
+//   });
+
+//   const [selectedService, setSelectedService] = useState(null);
+//   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
+//   const [addModalVisible, setAddModalVisible] = useState(false);
+//   const [searchText, setSearchText] = useState('');
+//   const [selectedCategory, setSelectedCategory] = useState('venue');
+//   const [moreModalVisible, setMoreModalVisible] = useState(false);
+
+//   // Fetch data on component load
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const venues = await ServiceVenue();
+//         const catering = await ServiceCatering();
+//         const allServices = await ServiceAll();
+
+//         // Transform data
+//         const transformData = (data) =>
+//           data.map((item) => ({
+//             id: item.serviceId,
+//             title: item.serviceName,
+//             description: `Type: ${item.serviceType}, Capacity: ${item.serviceCapacity}, Price: $${item.servicePrice}`,
+//             capacity: item.serviceCapacity,
+//             price: item.servicePrice,
+//             area: item.serviceArea,
+//             city: item.serviceCity,
+//             rating: 4.5, // Assuming hardcoded rating
+//             image: item.pictures.length
+//               ? `${BASE_URL}/services/images/${item.pictures[0].pictureUrl}`
+//               : 'https://via.placeholder.com/150', // Placeholder if no image
+//           }));
+
+//         setServicesData({
+//           venue: transformData(venues),
+//           catering: transformData(catering),
+//           allServices: transformData(allServices),
+//         });
+//       } catch (error) {
+//         console.error('Error fetching services:', error.message);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   const filterData = () => {
+//     const data = servicesData[selectedCategory];
+//     return data.filter((service) =>
+//       service.title.toLowerCase().includes(searchText.toLowerCase())
+//     );
+//   };
+
+//   const handleViewDetails = (item) => {
+//     setSelectedService(item);
+//     setViewDetailsModalVisible(true);
+//   };
+
+//   const handleAdd = (item) => {
+//     setSelectedService(item);
+//     setAddModalVisible(true);
+//   };
+
+//   const handleConfirmAddToPlan = () => {
+//     // Navigate or perform actions after adding the service
+//     console.log('Service added to plan:', selectedService);
+//     setAddModalVisible(false);
+//   };
+
+//   const handleCancelAddToPlan = () => {
+//     setAddModalVisible(false);
+//   };
+
+//   const handleCategoryChange = (category) => {
+//     setSelectedCategory(category);
+//     setSearchText(''); // Clear search when switching category
+//   };
+
+//   const handleSearchChange = (text) => {
+//     setSearchText(text);
+//   };
+
+//   const handleMoreModalOpen = () => {
+//     setMoreModalVisible(true);
+//   };
+
+//   const handleMoreModalClose = () => {
+//     setMoreModalVisible(false);
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <View style={styles.searchContainer}>
+//         <TextInput
+//           style={styles.searchInput}
+//           placeholder="Search Services..."
+//           value={searchText}
+//           onChangeText={handleSearchChange}
+//         />
+//         <ScrollView
+//           horizontal
+//           contentContainerStyle={styles.categoryButtonsContainer} // Use contentContainerStyle
+//         >
+//           <TouchableOpacity
+//             style={[
+//               styles.categoryButton,
+//               selectedCategory === 'venue' && styles.selectedCategoryButton,
+//             ]}
+//             onPress={() => handleCategoryChange('venue')}
+//           >
+//             <Icon name="event" size={20} color="#fff" />
+//             <Text style={styles.categoryButtonText}>Venue</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={[
+//               styles.categoryButton,
+//               selectedCategory === 'catering' && styles.selectedCategoryButton,
+//             ]}
+//             onPress={() => handleCategoryChange('catering')}
+//           >
+//             <Icon name="restaurant" size={20} color="#fff" />
+//             <Text style={styles.categoryButtonText}>Catering</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={[
+//               styles.categoryButton,
+//               selectedCategory === 'allServices' && styles.selectedCategoryButton,
+//             ]}
+//             onPress={() => handleCategoryChange('allServices')}
+//           >
+//             <Icon name="photo-camera" size={20} color="#fff" />
+//             <Text style={styles.categoryButtonText}>All Services</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={styles.categoryButton}
+//             onPress={handleMoreModalOpen}
+//           >
+//             <Icon name="more-horiz" size={20} color="#fff" />
+//             <Text style={styles.categoryButtonText}>More</Text>
+//           </TouchableOpacity>
+//         </ScrollView>
+//       </View>
+
+//       <FlatList
+//         data={filterData()}
+//         renderItem={({ item }) => (
+//           <ServiceCard
+//             item={item}
+//             onViewDetails={handleViewDetails}
+//             onAdd={handleAdd}
+//           />
+//         )}
+//         keyExtractor={(item) => item.id.toString()}
+//       />
+
+//       {/* View Details Modal */}
+//       <Modal visible={viewDetailsModalVisible} transparent>
+//         <View style={styles.modalOverlay}>
+//           <View style={styles.modalContent}>
+//             {selectedService && (
+//               <>
+//                 <Text style={styles.modalTitle}>{selectedService.title}</Text>
+//                 <Image source={{ uri: selectedService.image }} style={styles.modalImage} />
+//                 <Text style={styles.modalText}>Capacity: {selectedService.capacity}</Text>
+//                 <Text style={styles.modalText}>Price: {selectedService.price}</Text>
+//                 <Text style={styles.modalText}>Area: {selectedService.area}</Text>
+//                 <Text style={styles.modalText}>City: {selectedService.city}</Text>
+//                 <Text style={styles.modalText}>Rating: {selectedService.rating}</Text>
+//                 <TouchableOpacity
+//                   style={styles.closeModalButton}
+//                   onPress={() => setViewDetailsModalVisible(false)}
+//                 >
+//                   <Text style={styles.buttonText}>Close</Text>
+//                 </TouchableOpacity>
+//               </>
+//             )}
+//           </View>
+//         </View>
+//       </Modal>
+
+//       {/* Add to Plan Modal */}
+//       <Modal visible={addModalVisible} transparent>
+//         <View style={styles.modalOverlay}>
+//           <View style={styles.modalContent}>
+//             <Text style={styles.modalTitle}>
+//               Do you want to add this service to your plan?
+//             </Text>
+//             <View style={styles.buttonContainer}>
+//               <TouchableOpacity
+//                 style={styles.actionButton}
+//                 onPress={handleConfirmAddToPlan}
+//               >
+//                 <Text style={styles.buttonText}>Yes</Text>
+//               </TouchableOpacity>
+//               <TouchableOpacity
+//                 style={styles.actionButtonAdd}
+//                 onPress={handleCancelAddToPlan}
+//               >
+//                 <Text style={styles.buttonText}>No</Text>
+//               </TouchableOpacity>
+//             </View>
+//           </View>
+//         </View>
+//       </Modal>
+
+//       {/* More Modal */}
+//       <Modal visible={moreModalVisible} transparent>
+//   <View style={styles.modalOverlay}>
+//     <View style={styles.modalContent}>
+//     <TouchableOpacity
+//         style={styles.closeModalButton}
+//         onPress={handleMoreModalClose}
+//       >
+//         <Icon name="close" size={24} color="#fff" />
+//       </TouchableOpacity>
+//       <TouchableOpacity
+//         style={styles.actionButton}
+//         onPress={() => console.log('E-card clicked')}
+//       >
+//         <Icon name="card-giftcard" size={18} color="#fff" />
+//         <Text style={styles.buttonText}>E-card</Text>
+//       </TouchableOpacity>
+
+     
+//     </View>
+//   </View>
+// </Modal>
+
+// <Modal visible={moreModalVisible} transparent>
+//   <View style={styles.modalOverlay}>
+//     <View style={styles.modalContent}>
+//       <TouchableOpacity
+//         style={styles.actionButton}
+//         onPress={() => console.log('E-card clicked')}
+//       >
+//         <Icon name="card-giftcard" size={18} color="#fff" />
+//         <Text style={styles.buttonText}>E-card</Text>
+//       </TouchableOpacity>
+
+//       <TouchableOpacity
+//         style={styles.closeModalButton}
+//         onPress={handleMoreModalClose}
+//       >
+//         <Icon name="close" size={24} color="#fff" />
+//       </TouchableOpacity>
+//     </View>
+//   </View>
+// </Modal>
+//     </View>
+//   );
+// };
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     backgroundColor: '#F9F3EC',
+//   },
+//   searchContainer: {
+//     marginBottom: 15,
+//   },
+//   searchInput: {
+//     width: '100%',
+//     height: 50,
+//     borderColor: '#ccc',
+//     borderWidth: 1,
+//     marginBottom: 15,
+//     paddingHorizontal: 10,
+//     borderRadius: 10,
+//     backgroundColor: 'white',
+//     elevation: 2,
+//   },
+//   categoryButtonsContainer: {
+//     flexDirection: 'row', // Ensure buttons are laid out horizontally
+//     alignItems: 'center',
+//     paddingLeft: 10,
+//     paddingRight: 10,
+//   },
+//   categoryButton: {
+//     marginRight: 10,
+//     backgroundColor: '#5f6368',
+//     padding: 10,
+//     borderRadius: 5,
+//     alignItems: 'center',
+//     flexDirection: 'row',
+//   },
+//   selectedCategoryButton: {
+//     backgroundColor: '#6A4E36',
+//   },
+//   categoryButtonText: {
+//     color: '#fff',
+//     marginLeft: 8,
+//   },
+//   verticalList: {
+//     paddingTop: 10,
+//   },
+//   card: {
+//     backgroundColor: '#C8B29E',
+//     borderRadius: 10,
+//     marginBottom: 20,
+//     overflow: 'hidden',
+//     shadowColor: '#000',
+//     shadowOpacity: 0.2,
+//     shadowRadius: 5,
+//     elevation: 2,
+//   },
+//   cardImage: {
+//     height: 150,
+//     width: '100%',
+//     resizeMode: 'cover',
+//   },
+//   cardContent: {
+//     padding: 15,
+//   },
+//   cardTitle: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     marginBottom: 10,
+//   },
+//   cardDescription: {
+//     fontSize: 14,
+//     color: '#f',
+//     marginBottom: 15,
+//   },
+//   buttonContainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//   },
+//   actionButton: {
+//     backgroundColor: '#6A4E36',
+//     padding: 15,
+//     borderRadius: 25,
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   actionButtonAdd: {
+//     backgroundColor: '#1f1f1f',
+//     padding: 15,
+//     borderRadius: 25,
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   buttonText: {
+//     color: '#fff',
+//     marginLeft: 5,
+//   },
+//   modalOverlay: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+//   },
+//   modalContent: {
+//     width: 300, // Adjust modal width
+//     padding: 20,
+//     backgroundColor: 'white', // Modal background color
+//     borderRadius: 10,
+//     position: 'relative', // Position relative to the container for absolute positioning
+//   },
+//   modalTitle: {
+//     fontSize: 20,
+//     fontWeight: 'bold',
+//     marginBottom: 10,
+//   },
+//   modalText: {
+//     fontSize: 16,
+//     marginBottom: 10,
+//   },
+//   modalImage: {
+//     width: '100%',
+//     height: 150,
+//     resizeMode: 'contain',
+//     marginBottom: 10,
+//   },
+//   closeModalButton: {
+//     position: 'absolute',
+//     top: 10, // Distance from the top
+//     right: 10, // Distance from the right
+//     padding: 5, // Icon padding
+//   },
+//   ratingContainer: {
+//     marginBottom: 10,
+//   },
+//   toggleCommentsButton: {
+//     backgroundColor: '#00796b',
+//     padding: 10,
+//     borderRadius: 5,
+//     alignItems: 'center',
+//   },
+//   commentsSection: {
+//     maxHeight: 150,
+//     marginTop: 10,
+//   },
+//   commentItem: {
+//     marginBottom: 10,
+//   },
+//   commentUsername: {
+//     fontWeight: 'bold',
+//   },
+//   commentText: {
+//     fontSize: 14,
+//     color: '#555',
+//   },
+//   closeModalButton: {
+//     backgroundColor: '#00796b',
+//     padding: 10,
+//     borderRadius: 5,
+//     marginTop: 10,
+//     alignItems: 'center',
+//   },
+// });
+
+// export default ServicesDisplay;
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -810,10 +1493,13 @@ import {
   Image,
   Modal,
   Animated,
+  ScrollView,
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { ServiceVenue, ServiceCatering, ServiceAll,BASE_URL } from '../ServiceAPIs/UsersAPIs'; // Import your API functions
+import { ServiceVenue, ServiceCatering, ServiceAll, BASE_URL } from '../ServiceAPIs/UsersAPIs';
+import { useNavigation } from '@react-navigation/native';
+
 
 const ServiceCard = ({ item, onViewDetails, onAdd, animatedStyle }) => (
   <Animated.View style={[styles.card, animatedStyle]}>
@@ -834,19 +1520,21 @@ const ServiceCard = ({ item, onViewDetails, onAdd, animatedStyle }) => (
     </View>
   </Animated.View>
 );
+
 const ServicesDisplay = () => {
   const [servicesData, setServicesData] = useState({
     venue: [],
     catering: [],
-    otherServices: [],
+    allServices: [],
   });
+
   const [selectedService, setSelectedService] = useState(null);
   const [viewDetailsModalVisible, setViewDetailsModalVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('venue');
-
-  // Fetch data on component load
+  const [moreModalVisible, setMoreModalVisible] = useState(false);
+  const navigation = useNavigation(); 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -854,7 +1542,6 @@ const ServicesDisplay = () => {
         const catering = await ServiceCatering();
         const allServices = await ServiceAll();
 
-        // Transform data
         const transformData = (data) =>
           data.map((item) => ({
             id: item.serviceId,
@@ -864,16 +1551,16 @@ const ServicesDisplay = () => {
             price: item.servicePrice,
             area: item.serviceArea,
             city: item.serviceCity,
-            rating: 4.5, // Assuming hardcoded rating
+            rating: 4.5,
             image: item.pictures.length
               ? `${BASE_URL}/services/images/${item.pictures[0].pictureUrl}`
-              : 'https://via.placeholder.com/150', // Placeholder if no image
+              : 'https://via.placeholder.com/150',
           }));
 
         setServicesData({
           venue: transformData(venues),
           catering: transformData(catering),
-          otherServices: transformData(allServices),
+          allServices: transformData(allServices),
         });
       } catch (error) {
         console.error('Error fetching services:', error.message);
@@ -901,9 +1588,11 @@ const ServicesDisplay = () => {
   };
 
   const handleConfirmAddToPlan = () => {
-    // Navigate or perform actions after adding the service
     console.log('Service added to plan:', selectedService);
     setAddModalVisible(false);
+  };
+  const handleECardClick = () => {
+    navigation.navigate('templatesrc'); // Navigate to Templatesrc screen
   };
 
   const handleCancelAddToPlan = () => {
@@ -912,11 +1601,19 @@ const ServicesDisplay = () => {
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
-    setSearchText(''); // Clear search when switching category
+    setSearchText('');
   };
 
   const handleSearchChange = (text) => {
     setSearchText(text);
+  };
+
+  const handleMoreModalOpen = () => {
+    setMoreModalVisible(true);
+  };
+
+  const handleMoreModalClose = () => {
+    setMoreModalVisible(false);
   };
 
   return (
@@ -928,7 +1625,10 @@ const ServicesDisplay = () => {
           value={searchText}
           onChangeText={handleSearchChange}
         />
-        <View style={styles.categoryButtonsContainer}>
+        <ScrollView
+          horizontal
+          contentContainerStyle={styles.categoryButtonsContainer}
+        >
           <TouchableOpacity
             style={[
               styles.categoryButton,
@@ -952,14 +1652,21 @@ const ServicesDisplay = () => {
           <TouchableOpacity
             style={[
               styles.categoryButton,
-              selectedCategory === 'otherServices' && styles.selectedCategoryButton,
+              selectedCategory === 'allServices' && styles.selectedCategoryButton,
             ]}
-            onPress={() => handleCategoryChange('otherServices')}
+            onPress={() => handleCategoryChange('allServices')}
           >
             <Icon name="photo-camera" size={20} color="#fff" />
-            <Text style={styles.categoryButtonText}>Other Services</Text>
+            <Text style={styles.categoryButtonText}>All Services</Text>
           </TouchableOpacity>
-        </View>
+          <TouchableOpacity
+            style={styles.categoryButton}
+            onPress={handleMoreModalOpen}
+          >
+            <Icon name="more-horiz" size={20} color="#fff" />
+            <Text style={styles.categoryButtonText}>More</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
 
       <FlatList
@@ -983,15 +1690,15 @@ const ServicesDisplay = () => {
                 <Text style={styles.modalTitle}>{selectedService.title}</Text>
                 <Image source={{ uri: selectedService.image }} style={styles.modalImage} />
                 <Text style={styles.modalText}>Capacity: {selectedService.capacity}</Text>
-              <Text style={styles.modalText}>Price: {selectedService.price}</Text>
-              <Text style={styles.modalText}>Area: {selectedService.area}</Text>
-              <Text style={styles.modalText}>City: {selectedService.city}</Text>
-              <Text style={styles.modalText}>Rating: {selectedService.rating}</Text>
+                <Text style={styles.modalText}>Price: {selectedService.price}</Text>
+                <Text style={styles.modalText}>Area: {selectedService.area}</Text>
+                <Text style={styles.modalText}>City: {selectedService.city}</Text>
+                <Text style={styles.modalText}>Rating: {selectedService.rating}</Text>
                 <TouchableOpacity
                   style={styles.closeModalButton}
                   onPress={() => setViewDetailsModalVisible(false)}
                 >
-                  <Text style={styles.buttonText}>Close</Text>
+                  <Icon name="close" size={24} color="#000" />
                 </TouchableOpacity>
               </>
             )}
@@ -1023,6 +1730,27 @@ const ServicesDisplay = () => {
           </View>
         </View>
       </Modal>
+
+      {/* More Modal */}
+      <Modal visible={moreModalVisible} transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              style={styles.closeModalButton}
+              onPress={handleMoreModalClose}
+            >
+              <Icon name="close" size={24} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={handleECardClick} // Call the function on button click
+            >
+              <Icon name="card-giftcard" size={18} color="#fff" />
+              <Text style={styles.buttonText}>E-card</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -1049,9 +1777,12 @@ const styles = StyleSheet.create({
   },
   categoryButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   categoryButton: {
+    marginRight: 10,
     backgroundColor: '#5f6368',
     padding: 10,
     borderRadius: 5,
@@ -1064,9 +1795,6 @@ const styles = StyleSheet.create({
   categoryButtonText: {
     color: '#fff',
     marginLeft: 8,
-  },
-  verticalList: {
-    paddingTop: 10,
   },
   card: {
     backgroundColor: '#C8B29E',
@@ -1125,10 +1853,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
     width: 300,
+    padding: 27,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    position: 'relative',
   },
   modalTitle: {
     fontSize: 20,
@@ -1145,35 +1874,11 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginBottom: 10,
   },
-  ratingContainer: {
-    marginBottom: 10,
-  },
-  toggleCommentsButton: {
-    backgroundColor: '#00796b',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  commentsSection: {
-    maxHeight: 150,
-    marginTop: 10,
-  },
-  commentItem: {
-    marginBottom: 10,
-  },
-  commentUsername: {
-    fontWeight: 'bold',
-  },
-  commentText: {
-    fontSize: 14,
-    color: '#555',
-  },
   closeModalButton: {
-    backgroundColor: '#00796b',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-    alignItems: 'center',
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    // padding: 1,
   },
 });
 

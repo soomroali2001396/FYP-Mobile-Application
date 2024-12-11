@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2, // Add border width
-    borderColor: '#1e90ff', // Add border color
+    borderColor: '#6A4E36', // Add border color
     borderRadius: 10, // Add border radius for rounded corners
     padding: 5, // Add padding to space out the image from the border
     backgroundColor: '#f8f8ff', // Add background color to the template container
@@ -61,4 +61,3 @@ const styles = StyleSheet.create({
 });
 
 export default TemplatesScreen;
-

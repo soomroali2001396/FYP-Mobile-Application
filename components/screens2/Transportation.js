@@ -251,7 +251,7 @@ import {
   Modal,
   ScrollView,
   TextInput,
-  Animated,
+  Animated,Alert
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -324,6 +324,16 @@ export default function TransportSelection() {
   const handlePlanSubmit = () => {
     if (!people || isNaN(people) || parseInt(people) <= 0) {
       alert('Please enter a valid number of people');
+      return;
+    }
+
+    // Check if number of people exceeds venue capacity
+    if (parseInt(people) > selectedTransport.capacity) {
+      Alert.alert(
+        'Invalid Number of People',
+        `Number of people cannot exceed venue capacity of ${selectedTransport.capacity}`,
+        [{ text: 'OK' }]
+      );
       return;
     }
 

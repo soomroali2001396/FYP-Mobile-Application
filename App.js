@@ -154,7 +154,7 @@ export default function App() {
           <Stack.Screen name="Venuservice" component={Venuservice} />
           <Stack.Screen name="Catering" component={Catering} />
           <Stack.Screen name="Eventprogress" component={Eventprogress} />
-          {/* <Stack.Screen name="edittemplate" component={edittemplate} /> */}
+          <Stack.Screen name="edittemplate" component={edittemplate} />
           {/* <Stack.Screen name="ApiService" component={ApiService} /> */}
         </Stack.Navigator>
       </NavigationContainer>

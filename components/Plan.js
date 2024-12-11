@@ -1,5 +1,5 @@
 
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Modal, ScrollView} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Modal, ScrollView,Button} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for close button
@@ -18,6 +18,8 @@ export default function AddEventScreen({ navigation, route }) {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [serviceToUpdate, setServiceToUpdate] = useState(null);
   const [showBudgetExceededModal, setShowBudgetExceededModal] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
  
   useEffect(() => {
@@ -90,7 +92,12 @@ export default function AddEventScreen({ navigation, route }) {
   const finalizeEvent = () => {
     if (!eventName || !budget || !eventDate.from || !eventDate.to) {
       alert('Please fill in all fields before finalizing the event');
-    } else {
+    } 
+    if (!startDate || !endDate || endDate <= startDate) {
+      alert('Please ensure the start date is selected and the end date is at least one day later.');
+      return;
+    }
+    else {
       if (parseFloat(estimatedBudget) > parseFloat(budget)) {
         setShowBudgetExceededModal(true); // Show the budget exceeded modal
       } else {
@@ -108,24 +115,33 @@ export default function AddEventScreen({ navigation, route }) {
     return date ? new Date(date).toLocaleDateString() : '';
   };
 
-  const handleDateChange = (event, selectedDate, isStart) => {
-    const currentDate = selectedDate || event.date;
-    const formattedDate = formatDate(currentDate);
-
-    if (isStart) {
-      setEventDate((prevDate) => ({
-        ...prevDate,
-        from: formattedDate,
-      }));
+  const handleDateChange = (event, selectedDate, isStartDate) => {
+    if (isStartDate) {
       setShowStartDatePicker(false);
+      if (selectedDate) {
+        setStartDate(selectedDate);
+        setEventDate((prev) => ({
+          ...prev,
+          from: formatDate(selectedDate), // Format for display
+        }));
+        setEndDate(null); // Reset end date to ensure re-selection
+        setEventDate((prev) => ({ ...prev, to: '' })); // Clear end date in eventDate
+      }
     } else {
-      setEventDate((prevDate) => ({
-        ...prevDate,
-        to: formattedDate,
-      }));
       setShowEndDatePicker(false);
+      if (selectedDate && (!startDate || selectedDate > startDate)) {
+        setEndDate(selectedDate);
+        setEventDate((prev) => ({
+          ...prev,
+          to: formatDate(selectedDate), // Format for display
+        }));
+      } else {
+        alert('Please select an end date later than the start date.');
+      }
     }
   };
+  
+  
 
   
   const renderItem = ({ item }) => {
@@ -195,21 +211,25 @@ export default function AddEventScreen({ navigation, route }) {
       </View>
 
       {/* Start Date Picker */}
+      
       {showStartDatePicker && (
         <DateTimePicker
-          value={new Date()}
+          value={startDate || new Date()}
           mode="date"
           display="default"
+          minimumDate={new Date()} // Only allow dates from today onwards
           onChange={(event, selectedDate) => handleDateChange(event, selectedDate, true)}
         />
       )}
 
       {/* End Date Picker */}
+     
       {showEndDatePicker && (
         <DateTimePicker
-          value={new Date()}
+          value={endDate || (startDate ? new Date(startDate.getTime() + 24 * 60 * 60 * 1000) : new Date())}
           mode="date"
           display="default"
+          minimumDate={startDate ? new Date(startDate.getTime() + 24 * 60 * 60 * 1000) : new Date()} // Minimum date is 1 day after start date
           onChange={(event, selectedDate) => handleDateChange(event, selectedDate, false)}
         />
       )}

@@ -364,8 +364,189 @@
 //     color: '#888',
 //   },
 // });
+// import React, { useState } from 'react';
+// import { View, StyleSheet, TouchableOpacity, Image, ScrollView, Modal, Pressable, FlatList, Text } from 'react-native';
+// import { LinearGradient } from 'expo-linear-gradient';
+// import { MaterialIcons } from '@expo/vector-icons';
+
+// export default function HomeScreen({ navigation }) {
+//   const [historyVisible, setHistoryVisible] = useState(false);
+//   const [history, setHistory] = useState([]);
+
+//   const renderHistoryItem = ({ item }) => (
+//     <View style={styles.historyItem}>
+//       <Text style={styles.historyText}>+{item.amount}</Text>
+//       <Text style={styles.historyDate}>{item.date}</Text>
+//     </View>
+//   );
+
+//   return (
+//     <LinearGradient colors={['#ffffff', '#f4f4f4']} style={styles.container}>
+//       {/* Header Section */}
+//       <View style={styles.header}>
+//         <Text style={styles.mainTitle}>EventCraft</Text>
+//         <Text style={styles.subtitle}>Presenting you seamlessly services</Text>
+//       </View>
+
+//       {/* Budget History Modal */}
+//       <Modal
+//         transparent={true}
+//         animationType="slide"
+//         visible={historyVisible}
+//         onRequestClose={() => setHistoryVisible(false)}
+//       >
+//         <Pressable style={styles.modalBackground} onPress={() => setHistoryVisible(false)}>
+//           <View style={styles.modalContainer}>
+//             <TouchableOpacity style={styles.closeButton} onPress={() => setHistoryVisible(false)}>
+//               <MaterialIcons name="close" size={24} color="black" />
+//             </TouchableOpacity>
+//             <Text style={styles.historyTitle}>Transaction History</Text>
+//             <FlatList
+//               data={history}
+//               renderItem={renderHistoryItem}
+//               keyExtractor={(item, index) => index.toString()}
+//             />
+//           </View>
+//         </Pressable>
+//       </Modal>
+
+//       {/* Menu Section */}
+//       <View style={styles.cardContainer}>
+//         <Text style={styles.sectionTitle}>Explore Services</Text>
+//         <View style={styles.menuContainer}>
+//           <TouchableOpacity
+//             style={styles.card}
+//             onPress={() => navigation.navigate('Offers')}
+//             activeOpacity={0.9}
+//           >
+//             <Image source={require('../Images/wedding.jpg')} style={styles.imageButton} />
+//             <Text style={styles.cardText}>Event Packages</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={styles.card}
+//             onPress={() => navigation.navigate('Plan')}
+//             activeOpacity={0.9}
+//           >
+//             <Image source={require('../Images/eventlogo.jpg')} style={styles.imageButton} />
+//             <Text style={styles.cardText}>Event Planning</Text>
+//           </TouchableOpacity>
+//         </View>
+//         <View style={styles.menuContainer}>
+//           <TouchableOpacity
+//             style={styles.card}
+//             onPress={() => navigation.navigate('Services')}
+//             activeOpacity={0.9}
+//           >
+//             <Image source={require('../Images/Orange White Minimalist Simple Year End Big Sale Instagram Post.png')} style={styles.imageButton} />
+//             <Text style={styles.cardText}>Exclusive Services</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             style={styles.card}
+//             onPress={() => navigation.navigate('Team')}
+//             activeOpacity={0.9}
+//           >
+//             <Image source={require('../Images/Brown White Simple International Day Of Friendship Instagram Post.png')} style={styles.imageButton} />
+//             <Text style={styles.cardText}>Meet Our Team</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </LinearGradient>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor:'#F9F3EC',
+//   },
+//   header: {
+//     padding: 50,
+//     alignItems: 'center',
+//     borderBottomWidth: 1,
+//     borderBottomColor: '#ddd',
+//     backgroundColor:'#F9F3EC',
+  
+//   },
+//   mainTitle: {
+//     fontSize: 28,
+//     fontWeight: 'bold',
+//     color: '#333',
+//   },
+//   subtitle: {
+//     fontSize: 16,
+//     color: '#666',
+//     marginTop: 5,
+//   },
+//   cardContainer: {
+//     paddingHorizontal: 16,
+//     paddingVertical: 20,
+    
+//   },
+//   sectionTitle: {
+//     fontSize: 20,
+//     fontWeight: '600',
+//     color: '#444',
+//     marginBottom: 20,
+//   },
+//   menuContainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginBottom: 20,
+    
+    
+//   },
+//   card: {
+//     backgroundColor: '#fff',
+//     borderRadius: 10,
+//     width: '48%',
+//     alignItems: 'center',
+//     padding: 10,
+//     elevation: 3,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.2,
+//     shadowRadius: 4,
+//     backgroundColor:'#F9F3EC',
+    
+//   },
+//   imageButton: {
+//     width: '100%',
+//     height: 120,
+//     borderRadius: 10,
+//   },
+//   cardText: {
+//     marginTop: 10,
+//     fontSize: 14,
+//     color: '#333',
+//     fontWeight: '600',
+//   },
+//   modalBackground: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+//   },
+//   modalContainer: {
+//     width: '80%',
+//     padding: 20,
+//     backgroundColor: '#fff',
+//     borderRadius: 10,
+//     alignItems: 'center',
+//   },
+//   closeButton: {
+//     position: 'absolute',
+//     top: 10,
+//     right: 10,
+//   },
+//   historyTitle: {
+//     fontSize: 18,
+//     fontWeight: '600',
+//     marginBottom: 20,
+//   },
+// });
+
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, ScrollView, Modal, Pressable, FlatList, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Modal, Pressable, FlatList, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -449,6 +630,18 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.cardText}>Meet Our Team</Text>
           </TouchableOpacity>
         </View>
+
+        {/* New E-card Design Card */}
+        <View style={styles.centeredMenuContainer}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate('templatesrc')}
+      activeOpacity={0.9}
+    >
+      <Image source={require('../Images/e-card.jpg')} style={styles.imageButton} />
+      <Text style={styles.cardText}>E-card Design</Text>
+    </TouchableOpacity>
+  </View>
       </View>
     </LinearGradient>
   );
@@ -465,7 +658,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     backgroundColor:'#F9F3EC',
-  
   },
   mainTitle: {
     fontSize: 28,
@@ -480,7 +672,12 @@ const styles = StyleSheet.create({
   cardContainer: {
     paddingHorizontal: 16,
     paddingVertical: 20,
-    
+  },
+  centeredMenuContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',  // Centers the item horizontally
+    alignItems: 'center',  // Ensures it stays vertically aligned
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 20,
@@ -492,8 +689,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
-    
-    
   },
   card: {
     backgroundColor: '#fff',
@@ -507,7 +702,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     backgroundColor:'#F9F3EC',
-    
   },
   imageButton: {
     width: '100%',
